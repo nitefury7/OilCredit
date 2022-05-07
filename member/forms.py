@@ -1,11 +1,15 @@
 from django import forms
 from django.db import transaction
 from phonenumber_field.formfields import PhoneNumberField
-from member.models import MemberProfile, MemberType
+from member.models import MemberProfile, MemberType, Invoice
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 
 
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ['item', 'quantity']
 
 class MemberProfileForm(forms.Form):
     email = forms.EmailField(required=False)

@@ -1,4 +1,22 @@
 {% extends 'member/base.html' %}
 {% block main %}
-History
+<div class='container-fluid py-5'>
+    <h1>Order History</h1>
+    <table class='table table-striped'>
+        <thead>
+            <tr>
+                <th> Item </th>
+                <th> Quantity </th>
+                <th> Date </th>
+            </tr>
+        </thead>
+        {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.item }}</td>
+                <td>{{ invoice.quantity }}</td>
+                <td>{{ invoice.date}}</td>
+            <tr>
+        {% endfor %}
+    </table>
+</div>
 {% endblock %}
