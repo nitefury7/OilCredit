@@ -34,7 +34,7 @@ def profile_settings(request):
             change_password = PasswordChangeForm(request.user, request.POST)
             if change_password.is_valid():
                 change_password.save()
-                return redirect('member:profile_settings')
+                return redirect('home:login')
         else:
             form = MemberProfileForm(request.user, request.POST)
             if form.is_valid():
