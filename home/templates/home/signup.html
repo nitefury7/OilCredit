@@ -1,0 +1,15 @@
+{% extends 'home/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container py-5">
+    <h1> Sign Up </h1>
+    {% crispy form %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
