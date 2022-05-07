@@ -3,7 +3,9 @@
 
 <head itemscope itemtype="http://schema.org/WebSite">
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> {% block title %}
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+    {% block title %}
     <title> Oil Credit</title>
     {% endblock %}
 
@@ -43,6 +45,11 @@
                     <a href="{% url 'home:login' %}" class="btn btn-outline-light me-2">Login</a>
                     <a href="{% url 'home:signup' %}" class="btn btn-warning">Sign Up</a>
                 </div>
+                {% else %}
+                <div class="text-end">
+                    <span class='px-2'> {{request.user}} </span>
+                    <a href="{% url 'home:logout' %}" class="btn btn-warning">Logout</a>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -56,7 +63,7 @@
     {% block footer %}
     <div class="bg-dark container-fluid shadow-lg">
         <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 px-5">
-            <p class="col-md-4 mb-0 text-light">© 2021 Oil Company, Inc</p>
+            <p class="col-md-4 mb-0 text-light">© 2022 Oil Company, Inc</p>
 
             <ul class="nav col-md-4 justify-content-end">
                 <li class="nav-item"><a href="{% url 'home:home' %}" class="nav-link px-2 text-light">Home</a></li>

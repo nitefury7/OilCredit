@@ -7,7 +7,7 @@ def redirect_if_auth(fn):
     def inner(request):
         if request.user.is_authenticated:
             if MemberProfile.objects.filter(user=request.user).exists():
-                return redirect('member:dashboard')
+                return redirect('member:orders')
             elif EmployeeProfile.objects.filter(user=request.user).exists():
                 return redirect('employee:dashboard')
         return fn(request)
