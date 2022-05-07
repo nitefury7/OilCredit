@@ -15,6 +15,7 @@ def orders(request):
             invoice = form.save(commit=False)
             invoice.member = MemberProfile.objects.get(user=request.user)
             invoice.date = datetime.now()
+            invoice.approved = False
             invoice.save()
             return redirect('member:history')
     return render(request, 'member/orders.html', {'form' : form})

@@ -41,6 +41,7 @@ class Invoice(models.Model):
     quantity = models.IntegerField()
     date = models.DateTimeField()
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.member.user.username} ordered {self.quantity} {self.item.name} "
+        return f"{self.member.user.username} {'ordered' if self.approved else 'requested'} {self.quantity} {self.item.name} "

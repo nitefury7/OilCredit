@@ -1,0 +1,30 @@
+{% extends 'employee/base.html' %}
+{% load crispy_forms_tags %}
+{% block main %}
+<div class="container row py-5">
+    <h1>Profile Settings</h1>
+    {% crispy form %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+<div class="container row py-5">
+    <h1>Change Password</h1>
+    <form method='post'>
+      {% csrf_token %}
+      {{ change_password | crispy }}
+      <input value='Submit' name='change_password' type='submit' class='btn btn-warning'/>
+    </form>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger" role="alert">
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

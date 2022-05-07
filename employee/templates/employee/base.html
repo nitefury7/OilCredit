@@ -1,0 +1,42 @@
+{% extends 'home/base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block content %}
+<div class='container-fluid px-0'>
+  <div class='h-100 w-25 position-fixed top-0'>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100">
+      <div>
+        <i class="fa-solid fa-bars" style='font-size: 18px;'></i>
+        <span class="fs-4 px-3">Dashboard</span>
+      </div>
+      <hr>
+      <div class="mb-auto">
+        <div class='py-2'>
+          <a href="{% url 'employee:dashboard' %}" class="text-decoration-none text-white">
+            <i class="fa-solid fa-box" style="font-size:18px;"></i>
+            <span class="px-2">Invoices</span>
+          </a>
+        </div>
+        <div class='py-2'>
+          <a href="{% url 'employee:profile_settings' %}" class="text-decoration-none text-white">
+            <i class="fa-solid fa-user" style='font-size:18px;'></i>
+            <span class="px-2">Profile Settings</span>
+          </a>
+        </div>
+      </div>
+      <hr>
+      <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>
+    </div>
+  </div>
+  
+  <div class='container-fluid w-75' style='margin-left: 25%;'>
+    {% block main %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}
