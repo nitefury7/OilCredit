@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
 from home.utils import ensure_auth
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm
+from employee.forms import EmployeeProfileForm, OrderForm
 from member.models import Invoice
+from datetime import datetime
 
 @ensure_auth(EmployeeProfile)
 def dashboard(request):
@@ -17,6 +18,19 @@ def approve_invoice(request, id):
         invoice.approved = True
         invoice.save()
     return redirect('employee:dashboard')
+
+@ensure_auth(EmployeeProfile)
+def place_order(request):
+    form = OrderForm()
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            invoice = form.save(commit=False)
+            invoice.date = datetime.now()
+            invoice.approved = True
+            invoice.save()
+            return redirect('employee:dashboard')
+    return render(request, 'employee/place_order.html', {'form' : form})
 
 
 @ensure_auth(EmployeeProfile)

@@ -6,7 +6,13 @@ from employee.models import EmployeeProfile
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 from datetime import datetime
+from member.models import Invoice
 
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ['member', 'item', 'quantity']
 
 class EmployeeProfileForm(forms.Form):
     email = forms.EmailField(required=False)
