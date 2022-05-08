@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
+from django.core.validators import  MinValueValidator
 
 
 class Item(models.Model):
@@ -38,7 +39,7 @@ class MemberProfile(models.Model):
 
 class Invoice(models.Model):
     member = models.ForeignKey(MemberProfile, on_delete=models.CASCADE)
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     date = models.DateTimeField()
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     approved = models.BooleanField(default=False)

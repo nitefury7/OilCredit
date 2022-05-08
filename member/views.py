@@ -26,6 +26,15 @@ def history(request):
     return render(request, 'member/history.html', {'invoices' : invoices})
 
 @ensure_auth(MemberProfile)
+def cancel_order(request, id):
+    if Invoice.objects.filter(pk=id).exists():
+        invoice=Invoice.objects.get(pk=id)
+        if not invoice.approved:
+            invoice.delete()
+            
+    return redirect('member:history')
+
+@ensure_auth(MemberProfile)
 def profile_settings(request):
     form = MemberProfileForm(request.user)
     change_password = PasswordChangeForm(request.user)

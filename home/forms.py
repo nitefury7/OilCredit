@@ -56,7 +56,7 @@ class SignUpForm(forms.Form):
                 css_class='row',
             ),
             ButtonHolder(
-                Submit('submit', 'Submit',
+                Submit('submit', 'Sign Up',
                        css_class='btn btn-warning button white my-2')
             ),
         )

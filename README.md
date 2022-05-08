@@ -7,7 +7,7 @@ python3 manage.py migrate
 python3 manage.py loaddata fixture.json
 ```
 
-## Debug User Details
+## User Details
 
 ayush : ayush         -> Admin
 
