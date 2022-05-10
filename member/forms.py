@@ -13,7 +13,7 @@ class OrderForm(forms.ModelForm):
 
 class MemberProfileForm(forms.Form):
     email = forms.EmailField(required=False)
-    member_type = forms.ModelChoiceField(queryset=MemberType.objects.all())
+    member_type = forms.ModelChoiceField(queryset=MemberType.objects.all(), required = False )
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
     gender = forms.ChoiceField(

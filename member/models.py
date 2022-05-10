@@ -25,13 +25,14 @@ class MemberType(models.Model):
 class MemberProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
-    member_type = models.ForeignKey(MemberType, on_delete=models.CASCADE)
+    member_type = models.ForeignKey(MemberType, on_delete=models.CASCADE, blank=True, null=True)
     gender = models.CharField(max_length=1, choices=(
         ('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
     city = models.CharField(max_length=20, blank=True)
     state = models.CharField(max_length=20, blank=True)
     zip_code = models.BigIntegerField(blank=True, null=True)
     contact = PhoneNumberField(blank=True)
+    credit = models.PositiveIntegerField(default = 0)
 
     def __str__(self):
         return f"{self.user.username}"
