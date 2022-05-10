@@ -1,1 +1,509 @@
-[{ "model": "member.item", "pk": 4, "fields": { "name": "V.PLUS", "description": "V.PLUS", "rate": 100.0 } }, { "model": "member.item", "pk": 5, "fields": { "name": "UNLD", "description": "UNLD", "rate": 101.0 } }, { "model": "member.item", "pk": 6, "fields": { "name": "V.SUPER", "description": "V.SUPER", "rate": 102.0 } }, { "model": "member.item", "pk": 7, "fields": { "name": "V.C/DIESEL", "description": "V.C/DIESEL", "rate": 103.0 } }, { "model": "member.item", "pk": 8, "fields": { "name": "V.R/DIESEL", "description": "V.R/DIESEL", "rate": 104.0 } }, { "model": "member.item", "pk": 9, "fields": { "name": "OIL", "description": "OIL", "rate": 105.0 } }, { "model": "member.item", "pk": 10, "fields": { "name": "MISC.", "description": "MISC.", "rate": 106.0 } }, { "model": "member.membertype", "pk": 1, "fields": { "name": "Platinum", "description": "Platinum member", "value": 1000.0 } }, { "model": "member.membertype", "pk": 2, "fields": { "name": "Gold", "description": "Gold Membership", "value": 200.0 } }, { "model": "member.membertype", "pk": 3, "fields": { "name": "Bronze", "description": "This is bronze", "value": 100.0 } }, { "model": "member.memberprofile", "pk": 1, "fields": { "user": 2, "member_type": 1, "gender": "M", "city": "", "state": "", "zip_code": null, "contact": "" } }, { "model": "member.invoice", "pk": 5, "fields": { "member": 1, "quantity": 2, "date": "2022-05-07T13:55:57.535Z", "item": 4, "approved": false } }, { "model": "member.invoice", "pk": 6, "fields": { "member": 1, "quantity": 2, "date": "2022-05-07T13:56:05.797Z", "item": 5, "approved": false } }, { "model": "member.invoice", "pk": 7, "fields": { "member": 1, "quantity": 3, "date": "2022-05-07T13:56:11.446Z", "item": 6, "approved": true } }, { "model": "member.invoice", "pk": 8, "fields": { "member": 1, "quantity": 4, "date": "2022-05-07T13:56:16.315Z", "item": 8, "approved": false } }, { "model": "member.invoice", "pk": 9, "fields": { "member": 1, "quantity": 2, "date": "2022-05-07T13:56:22.281Z", "item": 7, "approved": false } }, { "model": "member.invoice", "pk": 10, "fields": { "member": 1, "quantity": 4, "date": "2022-05-07T13:56:27.298Z", "item": 9, "approved": true } }, { "model": "member.invoice", "pk": 11, "fields": { "member": 1, "quantity": 1, "date": "2022-05-07T13:56:33.724Z", "item": 10, "approved": false } }, { "model": "employee.employeeprofile", "pk": 2, "fields": { "user": 4, "gender": "M", "city": "Kathmandu", "state": "Bagmati", "zip_code": 44600, "contact": "+9779840424018", "employee_type": "T", "employment_date": "2022-05-07", "post": "Manager" } }, { "model": "admin.logentry", "pk": 1, "fields": { "action_time": "2022-05-07T06:39:47.548Z", "user": 1, "content_type": 2, "object_id": "1", "object_repr": "Platinum", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 2, "fields": { "action_time": "2022-05-07T06:45:38.780Z", "user": 1, "content_type": 3, "object_id": "2", "object_repr": "employee1", "action_flag": 3, "change_message": "" } }, { "model": "admin.logentry", "pk": 3, "fields": { "action_time": "2022-05-07T06:46:15.529Z", "user": 1, "content_type": 5, "object_id": "1", "object_repr": "employee1", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 4, "fields": { "action_time": "2022-05-07T06:46:44.337Z", "user": 1, "content_type": 9, "object_id": "3", "object_repr": "employee1", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]" } }, { "model": "admin.logentry", "pk": 5, "fields": { "action_time": "2022-05-07T06:48:09.615Z", "user": 1, "content_type": 1, "object_id": "1", "object_repr": "Item 1", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 6, "fields": { "action_time": "2022-05-07T06:48:19.286Z", "user": 1, "content_type": 1, "object_id": "2", "object_repr": "Apple", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 7, "fields": { "action_time": "2022-05-07T06:48:26.744Z", "user": 1, "content_type": 1, "object_id": "3", "object_repr": "Banana", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 8, "fields": { "action_time": "2022-05-07T08:00:38.332Z", "user": 1, "content_type": 9, "object_id": "3", "object_repr": "employee1", "action_flag": 3, "change_message": "" } }, { "model": "admin.logentry", "pk": 9, "fields": { "action_time": "2022-05-07T08:01:28.611Z", "user": 1, "content_type": 9, "object_id": "4", "object_repr": "employee", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 10, "fields": { "action_time": "2022-05-07T08:02:05.481Z", "user": 1, "content_type": 5, "object_id": "2", "object_repr": "employee", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 11, "fields": { "action_time": "2022-05-07T08:02:36.066Z", "user": 1, "content_type": 1, "object_id": "3", "object_repr": "Banana", "action_flag": 3, "change_message": "" } }, { "model": "admin.logentry", "pk": 12, "fields": { "action_time": "2022-05-07T08:02:36.083Z", "user": 1, "content_type": 1, "object_id": "2", "object_repr": "Apple", "action_flag": 3, "change_message": "" } }, { "model": "admin.logentry", "pk": 13, "fields": { "action_time": "2022-05-07T08:02:36.089Z", "user": 1, "content_type": 1, "object_id": "1", "object_repr": "Item 1", "action_flag": 3, "change_message": "" } }, { "model": "admin.logentry", "pk": 14, "fields": { "action_time": "2022-05-07T08:02:53.918Z", "user": 1, "content_type": 2, "object_id": "2", "object_repr": "Gold", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 15, "fields": { "action_time": "2022-05-07T08:03:03.420Z", "user": 1, "content_type": 2, "object_id": "3", "object_repr": "Silver", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 16, "fields": { "action_time": "2022-05-07T08:06:07.590Z", "user": 1, "content_type": 1, "object_id": "4", "object_repr": "V.PLUS", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 17, "fields": { "action_time": "2022-05-07T08:06:20.858Z", "user": 1, "content_type": 1, "object_id": "5", "object_repr": "UNLD", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 18, "fields": { "action_time": "2022-05-07T08:06:32.444Z", "user": 1, "content_type": 1, "object_id": "6", "object_repr": "V.SUPER", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 19, "fields": { "action_time": "2022-05-07T08:07:00.570Z", "user": 1, "content_type": 1, "object_id": "7", "object_repr": "V.C/DIESEL", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 20, "fields": { "action_time": "2022-05-07T08:07:14.274Z", "user": 1, "content_type": 1, "object_id": "8", "object_repr": "V.R/DIESEL", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 21, "fields": { "action_time": "2022-05-07T08:07:27.213Z", "user": 1, "content_type": 1, "object_id": "9", "object_repr": "OIL", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 22, "fields": { "action_time": "2022-05-07T08:07:38.473Z", "user": 1, "content_type": 1, "object_id": "10", "object_repr": "MISC.", "action_flag": 1, "change_message": "[{\"added\": {}}]" } }, { "model": "admin.logentry", "pk": 23, "fields": { "action_time": "2022-05-07T08:08:06.895Z", "user": 1, "content_type": 2, "object_id": "3", "object_repr": "Bronze", "action_flag": 2, "change_message": "[{\"changed\": {\"fields\": [\"Name\", \"Description\"]}}]" } }, { "model": "auth.permission", "pk": 1, "fields": { "name": "Can add item", "content_type": 1, "codename": "add_item" } }, { "model": "auth.permission", "pk": 2, "fields": { "name": "Can change item", "content_type": 1, "codename": "change_item" } }, { "model": "auth.permission", "pk": 3, "fields": { "name": "Can delete item", "content_type": 1, "codename": "delete_item" } }, { "model": "auth.permission", "pk": 4, "fields": { "name": "Can view item", "content_type": 1, "codename": "view_item" } }, { "model": "auth.permission", "pk": 5, "fields": { "name": "Can add member type", "content_type": 2, "codename": "add_membertype" } }, { "model": "auth.permission", "pk": 6, "fields": { "name": "Can change member type", "content_type": 2, "codename": "change_membertype" } }, { "model": "auth.permission", "pk": 7, "fields": { "name": "Can delete member type", "content_type": 2, "codename": "delete_membertype" } }, { "model": "auth.permission", "pk": 8, "fields": { "name": "Can view member type", "content_type": 2, "codename": "view_membertype" } }, { "model": "auth.permission", "pk": 9, "fields": { "name": "Can add member profile", "content_type": 3, "codename": "add_memberprofile" } }, { "model": "auth.permission", "pk": 10, "fields": { "name": "Can change member profile", "content_type": 3, "codename": "change_memberprofile" } }, { "model": "auth.permission", "pk": 11, "fields": { "name": "Can delete member profile", "content_type": 3, "codename": "delete_memberprofile" } }, { "model": "auth.permission", "pk": 12, "fields": { "name": "Can view member profile", "content_type": 3, "codename": "view_memberprofile" } }, { "model": "auth.permission", "pk": 13, "fields": { "name": "Can add invoice", "content_type": 4, "codename": "add_invoice" } }, { "model": "auth.permission", "pk": 14, "fields": { "name": "Can change invoice", "content_type": 4, "codename": "change_invoice" } }, { "model": "auth.permission", "pk": 15, "fields": { "name": "Can delete invoice", "content_type": 4, "codename": "delete_invoice" } }, { "model": "auth.permission", "pk": 16, "fields": { "name": "Can view invoice", "content_type": 4, "codename": "view_invoice" } }, { "model": "auth.permission", "pk": 17, "fields": { "name": "Can add employee profile", "content_type": 5, "codename": "add_employeeprofile" } }, { "model": "auth.permission", "pk": 18, "fields": { "name": "Can change employee profile", "content_type": 5, "codename": "change_employeeprofile" } }, { "model": "auth.permission", "pk": 19, "fields": { "name": "Can delete employee profile", "content_type": 5, "codename": "delete_employeeprofile" } }, { "model": "auth.permission", "pk": 20, "fields": { "name": "Can view employee profile", "content_type": 5, "codename": "view_employeeprofile" } }, { "model": "auth.permission", "pk": 21, "fields": { "name": "Can add log entry", "content_type": 6, "codename": "add_logentry" } }, { "model": "auth.permission", "pk": 22, "fields": { "name": "Can change log entry", "content_type": 6, "codename": "change_logentry" } }, { "model": "auth.permission", "pk": 23, "fields": { "name": "Can delete log entry", "content_type": 6, "codename": "delete_logentry" } }, { "model": "auth.permission", "pk": 24, "fields": { "name": "Can view log entry", "content_type": 6, "codename": "view_logentry" } }, { "model": "auth.permission", "pk": 25, "fields": { "name": "Can add permission", "content_type": 7, "codename": "add_permission" } }, { "model": "auth.permission", "pk": 26, "fields": { "name": "Can change permission", "content_type": 7, "codename": "change_permission" } }, { "model": "auth.permission", "pk": 27, "fields": { "name": "Can delete permission", "content_type": 7, "codename": "delete_permission" } }, { "model": "auth.permission", "pk": 28, "fields": { "name": "Can view permission", "content_type": 7, "codename": "view_permission" } }, { "model": "auth.permission", "pk": 29, "fields": { "name": "Can add group", "content_type": 8, "codename": "add_group" } }, { "model": "auth.permission", "pk": 30, "fields": { "name": "Can change group", "content_type": 8, "codename": "change_group" } }, { "model": "auth.permission", "pk": 31, "fields": { "name": "Can delete group", "content_type": 8, "codename": "delete_group" } }, { "model": "auth.permission", "pk": 32, "fields": { "name": "Can view group", "content_type": 8, "codename": "view_group" } }, { "model": "auth.permission", "pk": 33, "fields": { "name": "Can add user", "content_type": 9, "codename": "add_user" } }, { "model": "auth.permission", "pk": 34, "fields": { "name": "Can change user", "content_type": 9, "codename": "change_user" } }, { "model": "auth.permission", "pk": 35, "fields": { "name": "Can delete user", "content_type": 9, "codename": "delete_user" } }, { "model": "auth.permission", "pk": 36, "fields": { "name": "Can view user", "content_type": 9, "codename": "view_user" } }, { "model": "auth.permission", "pk": 37, "fields": { "name": "Can add content type", "content_type": 10, "codename": "add_contenttype" } }, { "model": "auth.permission", "pk": 38, "fields": { "name": "Can change content type", "content_type": 10, "codename": "change_contenttype" } }, { "model": "auth.permission", "pk": 39, "fields": { "name": "Can delete content type", "content_type": 10, "codename": "delete_contenttype" } }, { "model": "auth.permission", "pk": 40, "fields": { "name": "Can view content type", "content_type": 10, "codename": "view_contenttype" } }, { "model": "auth.permission", "pk": 41, "fields": { "name": "Can add session", "content_type": 11, "codename": "add_session" } }, { "model": "auth.permission", "pk": 42, "fields": { "name": "Can change session", "content_type": 11, "codename": "change_session" } }, { "model": "auth.permission", "pk": 43, "fields": { "name": "Can delete session", "content_type": 11, "codename": "delete_session" } }, { "model": "auth.permission", "pk": 44, "fields": { "name": "Can view session", "content_type": 11, "codename": "view_session" } }, { "model": "auth.user", "pk": 1, "fields": { "password": "pbkdf2_sha256$320000$MlNbahbtOOMfdrjPbZgzYM$QZw48hTqoqAmKIyKF/cePIeEJYJX2IFYTAt1AnDGqo0=", "last_login": "2022-05-07T08:12:01.014Z", "is_superuser": true, "username": "ayush", "first_name": "", "last_name": "", "email": "", "is_staff": true, "is_active": true, "date_joined": "2022-05-07T06:39:20.636Z", "groups": [], "user_permissions": [] } }, { "model": "auth.user", "pk": 2, "fields": { "password": "pbkdf2_sha256$320000$jF06i9Cq6NTYcsDuKh7unC$T/pM0O72wuluzWjBQ4ZlrN/j0dUQLNyH3m0Yg2P22Lo=", "last_login": "2022-05-07T08:17:31.779Z", "is_superuser": false, "username": "member", "first_name": "", "last_name": "", "email": "", "is_staff": false, "is_active": true, "date_joined": "2022-05-07T06:40:15.739Z", "groups": [], "user_permissions": [] } }, { "model": "auth.user", "pk": 4, "fields": { "password": "pbkdf2_sha256$320000$jGpiC5AJG2VOcDnllOJuqm$7Lx8zfr0mLoQtC1nqkObkSKxu/42LZUbvXjd1IM3ttE=", "last_login": "2022-05-07T08:12:27.355Z", "is_superuser": false, "username": "employee", "first_name": "", "last_name": "", "email": "", "is_staff": false, "is_active": true, "date_joined": "2022-05-07T08:01:28.409Z", "groups": [], "user_permissions": [] } }, { "model": "contenttypes.contenttype", "pk": 1, "fields": { "app_label": "member", "model": "item" } }, { "model": "contenttypes.contenttype", "pk": 2, "fields": { "app_label": "member", "model": "membertype" } }, { "model": "contenttypes.contenttype", "pk": 3, "fields": { "app_label": "member", "model": "memberprofile" } }, { "model": "contenttypes.contenttype", "pk": 4, "fields": { "app_label": "member", "model": "invoice" } }, { "model": "contenttypes.contenttype", "pk": 5, "fields": { "app_label": "employee", "model": "employeeprofile" } }, { "model": "contenttypes.contenttype", "pk": 6, "fields": { "app_label": "admin", "model": "logentry" } }, { "model": "contenttypes.contenttype", "pk": 7, "fields": { "app_label": "auth", "model": "permission" } }, { "model": "contenttypes.contenttype", "pk": 8, "fields": { "app_label": "auth", "model": "group" } }, { "model": "contenttypes.contenttype", "pk": 9, "fields": { "app_label": "auth", "model": "user" } }, { "model": "contenttypes.contenttype", "pk": 10, "fields": { "app_label": "contenttypes", "model": "contenttype" } }, { "model": "contenttypes.contenttype", "pk": 11, "fields": { "app_label": "sessions", "model": "session" } }, { "model": "sessions.session", "pk": "ba2cb1vkp06ai99ozoz86fworuccav2q", "fields": { "session_data": ".eJxVjEEOgjAQRe_StWnoFBjq0j1naGY6xaKmTSisjHcXEha6fe_9_1aetjX5rcbFz6KuyqjLL2MKz5gPIQ_K96JDyesysz4SfdqqxyLxdTvbv4NENe1rRrJWWiODtRSCM9ANk2vYYRux2RkIMFqEHiaITiyajggdE_fREKrPF9M2N5o:1nnEEM:bEr1YndlEok_TW_AXZwSNzUFxDqjyWM4FjSF8PBGOeE", "expire_date": "2022-05-21T06:47:54.178Z" } }, { "model": "sessions.session", "pk": "l3j068eghcuefx9ghgzmshrrculvsen5", "fields": { "session_data": ".eJxVjDsOwjAQBe_iGlnrzzpZSnrOYPmzxgHkSHFSIe4OkVJA-2bmvYQP21r91nnxUxZnocXpd4shPbjtIN9Du80yzW1dpih3RR60y-uc-Xk53L-DGnr91pYcBgMjK3JFm4REBZmKjmCKckYVdgM6TgDZDnkEwmhKimSBtCUU7w_FSTcB:1nnFd5:uEUCctOhkL8Gs_DBhz5TbndlISTapaWozrMg2RP2FoM", "expire_date": "2022-05-21T08:17:31.785Z" } }, { "model": "sessions.session", "pk": "thh811xtdx2d0gwvyto7ptsuerollhs8", "fields": { "session_data": ".eJxVjEEOgjAQRe_StWnoFBjq0j1naGY6xaKmTSisjHcXEha6fe_9_1aetjX5rcbFz6KuyqjLL2MKz5gPIQ_K96JDyesysz4SfdqqxyLxdTvbv4NENe1rRrJWWiODtRSCM9ANk2vYYRux2RkIMFqEHiaITiyajggdE_fREKrPF9M2N5o:1nnFXl:hBgQlDsIro-ba3-uDtjUoa22Qwia2IA3xtDDgtvhkjg", "expire_date": "2022-05-21T08:12:01.020Z" } }]
+[
+{
+  "model": "member.item",
+  "pk": 1,
+  "fields": {
+    "name": "V.PLUS",
+    "description": "V.PLUS",
+    "rate": 100.0
+  }
+},
+{
+  "model": "member.item",
+  "pk": 2,
+  "fields": {
+    "name": "UNLD",
+    "description": "UNLD",
+    "rate": 101.0
+  }
+},
+{
+  "model": "member.item",
+  "pk": 3,
+  "fields": {
+    "name": "V.SUPER",
+    "description": "V.SUPER",
+    "rate": 102.0
+  }
+},
+{
+  "model": "member.item",
+  "pk": 4,
+  "fields": {
+    "name": "V.C/DIESEL",
+    "description": "V.C/DIESEL",
+    "rate": 103.0
+  }
+},
+{
+  "model": "member.membertype",
+  "pk": 1,
+  "fields": {
+    "name": "Platinum",
+    "description": "level3",
+    "value": 2500.0
+  }
+},
+{
+  "model": "member.membertype",
+  "pk": 2,
+  "fields": {
+    "name": "Gold",
+    "description": "level2",
+    "value": 1000.0
+  }
+},
+{
+  "model": "member.membertype",
+  "pk": 3,
+  "fields": {
+    "name": "Silver",
+    "description": "level1",
+    "value": 500.0
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 1,
+  "fields": {
+    "member": 3,
+    "quantity": 3,
+    "date": "2022-05-09T19:14:29.061Z",
+    "item": 1,
+    "approved": true
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 2,
+  "fields": {
+    "member": 3,
+    "quantity": 4,
+    "date": "2022-05-09T19:14:42.579Z",
+    "item": 3,
+    "approved": false
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 3,
+  "fields": {
+    "member": 1,
+    "quantity": 4,
+    "date": "2022-05-09T19:20:21.260Z",
+    "item": 4,
+    "approved": true
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 4,
+  "fields": {
+    "member": 1,
+    "quantity": 5,
+    "date": "2022-05-09T19:20:28.321Z",
+    "item": 2,
+    "approved": false
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 5,
+  "fields": {
+    "member": 1,
+    "quantity": 1,
+    "date": "2022-05-09T19:20:41.689Z",
+    "item": 3,
+    "approved": true
+  }
+},
+{
+  "model": "member.invoice",
+  "pk": 6,
+  "fields": {
+    "member": 1,
+    "quantity": 4,
+    "date": "2022-05-09T19:20:54.999Z",
+    "item": 4,
+    "approved": false
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$320000$eilqyJyHlOoVtvjP86hVm5$HCBs14ReHqDVvSFx1irgNaSV6DKRvwfhS9LeWO1aV8Q=",
+    "last_login": "2022-05-09T13:45:31.137Z",
+    "is_superuser": true,
+    "username": "ayush",
+    "first_name": "Ayush",
+    "last_name": "Marhatta",
+    "email": "ayush.infinity5@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2022-05-09T13:00:50Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$320000$C7hL59XR2QLryKB6vgVcFm$1bEaUUrYHPntWzkB8KYhdITcEFD/SbCLWrCGTrYE2EY=",
+    "last_login": "2022-05-09T13:36:45.426Z",
+    "is_superuser": false,
+    "username": "member",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-05-09T13:04:28.263Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$320000$ZrnLxhCVWWVCtx1432xABy$oIWAwtnuvRWlebh0jsTx5qhr3UilTa7UlxbEVp3hF34=",
+    "last_login": "2022-05-09T13:36:21.418Z",
+    "is_superuser": false,
+    "username": "employee",
+    "first_name": "first",
+    "last_name": "last",
+    "email": "first@last.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-05-09T13:05:08.422Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$320000$peOoooyMiJhfnpHzi6jp0Y$6G8xE8G0QKJQvi6cLsKMk6f7ZFBNVokHGSXuBY1EZw4=",
+    "last_login": "2022-05-09T13:07:05.278Z",
+    "is_superuser": false,
+    "username": "member2",
+    "first_name": "member2",
+    "last_name": "test",
+    "email": "test2@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-05-09T13:07:04.809Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "fields": {
+    "password": "pbkdf2_sha256$320000$S2xSV4KOJzskqs6fjHOVMM$mNgSKsMNo1+axBVfCdHYz8uN8LPftKUSwQxWUdziAbE=",
+    "last_login": "2022-05-09T13:49:36.495Z",
+    "is_superuser": false,
+    "username": "member3",
+    "first_name": "member3",
+    "last_name": "t",
+    "email": "test3@test.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2022-05-09T13:49:36.044Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2022-05-09T13:01:33.202Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "ayush",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"First name\", \"Last name\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2022-05-09T13:02:48.695Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "membertype"
+    ],
+    "object_id": "1",
+    "object_repr": "Platinum",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2022-05-09T13:03:11.023Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "membertype"
+    ],
+    "object_id": "2",
+    "object_repr": "Gold",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 4,
+  "fields": {
+    "action_time": "2022-05-09T13:03:30.394Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "membertype"
+    ],
+    "object_id": "3",
+    "object_repr": "Silver",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 5,
+  "fields": {
+    "action_time": "2022-05-09T13:04:28.559Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "2",
+    "object_repr": "member",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"member profile\", \"object\": \"member\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 6,
+  "fields": {
+    "action_time": "2022-05-09T13:05:08.882Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "3",
+    "object_repr": "employee",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}, {\"added\": {\"name\": \"employee profile\", \"object\": \"employee\"}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 7,
+  "fields": {
+    "action_time": "2022-05-09T13:19:33.503Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "item"
+    ],
+    "object_id": "1",
+    "object_repr": "V.PLUS",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 8,
+  "fields": {
+    "action_time": "2022-05-09T13:23:09.861Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "item"
+    ],
+    "object_id": "1",
+    "object_repr": "V.PLUS",
+    "action_flag": 2,
+    "change_message": "[]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 9,
+  "fields": {
+    "action_time": "2022-05-09T13:23:24.769Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "item"
+    ],
+    "object_id": "2",
+    "object_repr": "UNLD",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 10,
+  "fields": {
+    "action_time": "2022-05-09T13:23:43.308Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "item"
+    ],
+    "object_id": "3",
+    "object_repr": "V.SUPER",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 11,
+  "fields": {
+    "action_time": "2022-05-09T13:24:08.739Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "member",
+      "item"
+    ],
+    "object_id": "4",
+    "object_repr": "V.C/DIESEL",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 12,
+  "fields": {
+    "action_time": "2022-05-09T13:26:53.312Z",
+    "user": [
+      "ayush"
+    ],
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "object_id": "1",
+    "object_repr": "ayush",
+    "action_flag": 2,
+    "change_message": "[{\"added\": {\"name\": \"member profile\", \"object\": \"ayush\"}}]"
+  }
+},
+{
+  "model": "employee.employeeprofile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "employee"
+    ],
+    "gender": "M",
+    "city": "Kathmandu",
+    "state": "Bagmati",
+    "zip_code": 44600,
+    "contact": "+9779841234568",
+    "employee_type": "P",
+    "employment_date": "2022-05-09",
+    "post": "Cashier"
+  }
+},
+{
+  "model": "member.memberprofile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "member"
+    ],
+    "member_type": 1,
+    "gender": "M",
+    "city": "Kathmandu",
+    "state": "Bagmati",
+    "zip_code": 44600,
+    "contact": "+9779841234567"
+  }
+},
+{
+  "model": "member.memberprofile",
+  "pk": 2,
+  "fields": {
+    "user": [
+      "member2"
+    ],
+    "member_type": 1,
+    "gender": "M",
+    "city": "Kathmandu",
+    "state": "Bagmati",
+    "zip_code": 44600,
+    "contact": "+9779841234564"
+  }
+},
+{
+  "model": "member.memberprofile",
+  "pk": 3,
+  "fields": {
+    "user": [
+      "ayush"
+    ],
+    "member_type": 1,
+    "gender": "M",
+    "city": "Kathmandu",
+    "state": "Bagmati",
+    "zip_code": 44600,
+    "contact": "+9779849915295"
+  }
+},
+{
+  "model": "member.memberprofile",
+  "pk": 4,
+  "fields": {
+    "user": [
+      "member3"
+    ],
+    "member_type": 1,
+    "gender": "M",
+    "city": "",
+    "state": "",
+    "zip_code": null,
+    "contact": ""
+  }
+}
+]
