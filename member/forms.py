@@ -11,6 +11,11 @@ class OrderForm(forms.ModelForm):
         model = Invoice
         fields = ['item', 'quantity']
 
+class AddCredit(forms.ModelForm):
+    class Meta:
+        model = MemberProfile
+        fields = ['credit']
+
 class MemberProfileForm(forms.Form):
     email = forms.EmailField(required=False)
     member_type = forms.ModelChoiceField(queryset=MemberType.objects.all(), required = False )

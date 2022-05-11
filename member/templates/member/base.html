@@ -34,6 +34,12 @@
             <span class="px-2">Profile Settings</span>
           </a>
         </div>
+        <div class='py-2'>
+          <a href="#" class="text-decoration-none text-white">
+            <i class="fa-solid fa-user" style='font-size:18px;'></i>
+            <span class="px-2">My Credit: {{request.credit}}$</span>
+          </a>
+        </div>
       </div>
       <hr>
       <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>

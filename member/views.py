@@ -26,7 +26,11 @@ def history(request):
     return render(request, 'member/history.html', {'invoices' : invoices})
 
 @ensure_auth(MemberProfile)
-def cancel_order(request, id):
+def my_credit(request):
+    return render(request, 'member/base.html')
+
+@ensure_auth(MemberProfile)
+def cancel_order(id):
     if Invoice.objects.filter(pk=id).exists():
         invoice=Invoice.objects.get(pk=id)
         if not invoice.approved:

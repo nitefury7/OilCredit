@@ -8,4 +8,5 @@ urlpatterns = [
     path('profile_settings/', views.profile_settings, name='profile_settings'),
     path('place_order/', views.place_order, name='place_order'),
     path('approve_invoice/<int:id>', views.approve_invoice, name='approve_invoice'),
+    path('add_credit/', views.add_credit, name = 'add_credit'),
 ]

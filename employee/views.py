@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
 from home.utils import ensure_auth
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, OrderForm
+from employee.forms import EmployeeProfileForm, OrderForm, AddCredit
 from member.models import Invoice
 from datetime import datetime
 
@@ -31,6 +31,17 @@ def place_order(request):
             invoice.save()
             return redirect('employee:dashboard')
     return render(request, 'employee/place_order.html', {'form' : form})
+
+@ensure_auth(EmployeeProfile)
+def add_credit(request):
+    form = AddCredit()
+    if request.method == 'POST':
+        form = AddCredit(request.POST)
+        if form.is_valid():
+            
+            return redirect('employee:dashboard')
+
+    return render(request, 'employee/add_credit.html', {'form' : form})
 
 
 @ensure_auth(EmployeeProfile)
