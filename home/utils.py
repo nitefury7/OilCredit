@@ -13,6 +13,11 @@ def redirect_if_auth(fn):
         return fn(request, *args, **kwargs)
     return inner
 
+def get_profile(model, user):
+    if model.objects.filter(user=user).exists():
+        return model.objects.get(user=user)
+    else:
+        return None
 
 def ensure_auth(model):
     def decorator(fn):

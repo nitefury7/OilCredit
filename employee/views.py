@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
 from django.db import transaction
 from django.contrib import messages
-from home.utils import ensure_auth
+from home.utils import ensure_auth, get_profile
 from employee.models import EmployeeProfile
 from employee.forms import EmployeeProfileForm, OrderForm, SetCredit
 from member.models import Invoice, MemberProfile
@@ -17,7 +17,7 @@ def dashboard(request):
 def approve_invoice(request, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        invoice.approved_by = EmployeeProfile.objects.get(user=request.user)
+        invoice.approved_by = get_profile(EmployeeProfile, request.user)
         invoice.approval_timestamp = datetime.now()
         invoice.save()
     return redirect('employee:dashboard')
@@ -39,7 +39,7 @@ def place_order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            member = form.member
+            member = form.cleaned_data['member']
             cost = form.cleaned_data['item'].rate * form.cleaned_data['quantity']
             if (member.credit < cost):
                 messages.error(request, f"{member.user.username} does not have sufficient credits for this purchase.")
@@ -49,7 +49,7 @@ def place_order(request):
             invoice = form.save(commit=False)
             invoice.member = member
             invoice.date = datetime.now()
-            invoice.approved_by = MemberProfile.objects.get(user=request.user)
+            invoice.approved_by = get_profile(EmployeeProfile, request.user)
             invoice.approval_timestamp = datetime.now()
 
             with transaction.atomic():
@@ -68,8 +68,8 @@ def set_credit(request):
     form = SetCredit()
     if request.method == 'POST':
         form = SetCredit(request.POST)
-        if MemberProfile.objects.filter(pk=form.cleaned_data.user).exists():
-            member = MemberProfile.objects.get(pk=form.cleaned_data.user)
+        member = get_profile(MemberProfile, form.cleaned_data.user)
+        if member:
             form = SetCredit(request.POST, instance=member)
             if form.is_valid():
                 return redirect('employee:dashboard')

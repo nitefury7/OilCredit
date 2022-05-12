@@ -3,14 +3,15 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from member.forms import MemberProfileForm, OrderForm
 from member.models import MemberProfile, Invoice
-from home.utils import ensure_auth
+from home.utils import ensure_auth, get_profile
 from datetime import datetime
 from django.db import transaction
 
 # Create your views here.
 @ensure_auth(MemberProfile)
 def orders(request):
-    member = MemberProfile.objects.get(user=request.user)
+    member = get_profile(MemberProfile, request.user)
+
     form = OrderForm()
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -34,18 +35,17 @@ def orders(request):
             messages.error(request, "Sorry, your order couldn't be processed.")
             return redirect('member:orders')
             
-    invoices = Invoice.objects.filter(
-        member=MemberProfile.objects.get(user=request.user)).order_by('-date')
+    invoices = Invoice.objects.filter(member=member).order_by('-date')
     return render(
         request,
         'member/orders.html',
-        {'form': form, 'member': member, 'user': request.user, 'invoices': invoices}
+        {'form': form, 'invoices': invoices}
     )
 
 
 @ensure_auth(MemberProfile)
 def cancel_order(request, id):
-    member = MemberProfile.objects.get(user=request.user)
+    member = get_profile(MemberProfile, request.user)
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
         if not invoice.approved() and member == invoice.member:
@@ -74,5 +74,5 @@ def profile_settings(request):
                 form.save()
                 return redirect('member:profile_settings')
 
-    member = MemberProfile.objects.get(user=request.user)
-    return render(request, 'member/profile_settings.html', {'form': form, 'member': member, 'user': request.user,  'change_password': change_password})
+    member = get_profile(MemberProfile, request.user)
+    return render(request, 'member/profile_settings.html', {'form': form, 'change_password': change_password})
