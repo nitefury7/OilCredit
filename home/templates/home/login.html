@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container-fluid" style="height: 90vh;">
+<div class="container-fluid my-3" style="min-height: 90vh;">
 <div class="row d-flex justify-content-center align-items-center h-100">
   <div class="col-md-6">
     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
@@ -10,11 +10,17 @@
   </div>
   <div class="col-md-4 offset-x-2">
     {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-danger" role="alert">
-      {{message}}
-    </div>
-    {% endfor %}
+      {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger" role="alert">
+          {{message}}
+        </div>
+        {% else %}
+          <div class="alert alert-{{message.tags}}" role="alert">
+            {{message}}
+          </div>
+        {% endif %}
+      {% endfor %}
     {% endif %}
     <form method='POST'>
       {% csrf_token %}

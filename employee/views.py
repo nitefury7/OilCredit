@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import PasswordChangeForm
+from django.db import transaction
+from django.contrib import messages
 from home.utils import ensure_auth
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, OrderForm, AddCredit
-from member.models import Invoice
+from employee.forms import EmployeeProfileForm, OrderForm, SetCredit
+from member.models import Invoice, MemberProfile
 from datetime import datetime
 
 @ensure_auth(EmployeeProfile)
@@ -20,28 +22,57 @@ def approve_invoice(request, id):
     return redirect('employee:dashboard')
 
 @ensure_auth(EmployeeProfile)
+def cancel_invoice(request, id):
+    if Invoice.objects.filter(pk=id).exists():
+        invoice = Invoice.objects.get(pk=id)
+        if not invoice.approved:
+            invoice.member.credit += invoice.item.rate * invoice.quantity
+            with transaction.atomic():
+                invoice.member.save()
+                invoice.delete()
+    return redirect('employee:dashboard')
+
+@ensure_auth(EmployeeProfile)
 def place_order(request):
     form = OrderForm()
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
+            member = form.member
+            cost = form.cleaned_data['item'].rate * form.cleaned_data['quantity']
+            if (member.credit < cost):
+                messages.error(request, f"{member.user.username} does not have sufficient credits for this purchase.")
+                return redirect('employee:place_order')
+            member.credit -= cost
+
             invoice = form.save(commit=False)
+            invoice.member = member
             invoice.date = datetime.now()
             invoice.approved = True
-            invoice.save()
-            return redirect('employee:dashboard')
+
+            with transaction.atomic():
+                member.save()
+                invoice.save()
+            messages.success(request, "Your order has been placed successfully.")
+            return redirect('employee:place_order')
+        else:
+            messages.error(request, "Sorry, your order couldn't be processed.")
+            return redirect('employee:place_order')
     return render(request, 'employee/place_order.html', {'form' : form})
 
+# TODO: complete this
 @ensure_auth(EmployeeProfile)
-def add_credit(request):
-    form = AddCredit()
+def set_credit(request):
+    form = SetCredit()
     if request.method == 'POST':
-        form = AddCredit(request.POST)
-        if form.is_valid():
-            
-            return redirect('employee:dashboard')
+        form = SetCredit(request.POST)
+        if MemberProfile.objects.filter(pk=form.cleaned_data.user).exists():
+            member = MemberProfile.get(pk=form.cleaned_data.user)
+            form = SetCredit(request.POST, instance=member)
+            if form.is_valid():
+                return redirect('employee:dashboard')
 
-    return render(request, 'employee/add_credit.html', {'form' : form})
+    return render(request, 'employee/set_credit.html', {'form' : form})
 
 
 @ensure_auth(EmployeeProfile)

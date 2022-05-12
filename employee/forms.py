@@ -14,7 +14,7 @@ class OrderForm(forms.ModelForm):
         model = Invoice
         fields = ['member', 'item', 'quantity']
 
-class AddCredit(forms.ModelForm):
+class SetCredit(forms.ModelForm):
     class Meta:
         model = MemberProfile
         fields = ['user','credit']

@@ -11,6 +11,19 @@ class OrderForm(forms.ModelForm):
         model = Invoice
         fields = ['item', 'quantity']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Div('item', css_class='col-md-6'),
+                Div('quantity', css_class='col-md-6'),
+                css_class='row',
+            ),
+            ButtonHolder(Submit('submit', 'Submit', css_class='btn btn-warning my-2')),
+        )
+
+
 class AddCredit(forms.ModelForm):
     class Meta:
         model = MemberProfile

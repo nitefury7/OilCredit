@@ -1,0 +1,38 @@
+.credit_card {
+    box-shadow: black 8px 8px 8px;
+    border-radius: 25px;
+}
+
+.credit_card_details {
+    
+    background: rgb(108, 117, 125);
+    background: linear-gradient(50deg, rgb(108, 117, 125) 40%, rgb(177, 177, 177) 70%,  rgb(108, 117, 125) 100%);
+    border-radius: 25px 0px 0px 25px;
+    border-right: 1px solid white;
+}
+
+.credit_card_chip {
+    width: 50px;
+    height: 40px;
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+.credit_card_name {
+    text-shadow: black 3px 4px 5px;
+}
+
+#sidebar {
+    overflow: hidden;
+    min-height: 100vh;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 350px;
+    animation: slide 0.5s forwards;
+}
+
+@media only screen and (max-width: 800px) {
+    #sidebar {
+        display: none;
+    }
+}

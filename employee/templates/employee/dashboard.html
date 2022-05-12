@@ -9,7 +9,7 @@
                 <th> Item </th>
                 <th> Quantity </th>
                 <th> Date </th>
-                <th> Approved </th>
+                <th> Actions  </th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +19,14 @@
                 <td>{{ invoice.item }}</td>
                 <td>{{ invoice.quantity }}</td>
                 <td>{{ invoice.date}}</td>
-                <td><a class='btn btn-warning' href="{% url 'employee:approve_invoice' invoice.pk %}">Approve</a></td>
+                <td>
+                    <a class='mx-2 btn btn-success rounded-circle' href="{% url 'employee:approve_invoice' invoice.pk %}">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </a>
+                    <a class='mx-2 btn btn-danger rounded-circle' href="{% url 'employee:cancel_invoice' invoice.pk %}">
+                        <i class="fa-solid fa-ban"></i>
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

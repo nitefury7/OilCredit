@@ -1,52 +1,78 @@
 {% extends 'home/base.html' %}
+{% load static %}
 
 {% block header %}
+{% endblock %}
+
+{% block extrastyle %}
+<link href="{% static 'member/base.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrascripts %}
+<script src="{% static 'member/base.js' %}"></script>
 {% endblock %}
 
 {% block footer %}
 {% endblock %}
 
 {% block content %}
-<div class='container-fluid px-0'>
-  <div class='h-100 w-25 position-fixed top-0'>
+<div class="container-fluid py-1 bg-danger sticky-top d-flex align-items-center">
+  <button type='button' class="btn btn-danger" onclick='toggle_sidebar();'>
+    <i class="fa-solid fa-bars"></i>
+  </button> 
+  <span class="fs-4 mx-3 text-white">𝄜 Dashboard</span>
+  <div class='ms-auto d-flex'>
+    <span class='text-white px-4 my-auto fw-bold fs-5'> $ {{member.credit}} </span>
+    <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>
+  </div>
+</div>
+
+<div class='container-fluid px-0 d-flex justify-content-between'>
+  <div id='sidebar'>
     <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100">
       <div>
-        <i class="fa-solid fa-bars" style='font-size: 18px;'></i>
-        <span class="fs-4 px-3">Dashboard</span>
+        <div class='pt-2 mt-2'>
+          <div class='credit_card container-fluid bg-danger'>
+            <div class='row'>
+              <div class="credit_card_details position-relative bg-secondary col-11 p-4 d-flex flex-column">
+                <div class='row align-items-center'>
+                  <div class="col">
+                    <span> Your Credits </span>
+                  </div>
+                  <div class="col d-flex">
+                    <div class="credit_card_chip ms-auto bg-warning">
+                    </div>
+                </div>
+              </div>
+              <h3 class='credit_card_name font-monospace'>{{ user.username }}</h3>
+              <h3>**** **** **** ****</h3>
+              <h3 class='mt-auto align-bottom'>$ {{ member.credit }}</h3>
+              </div>
+              <div class="col-1"></div>
+            </div>
+          </div>
+        </div>
+        <hr>
+
+        <div class="mb-auto">
+          <div class='py-2'>
+            <a href="{% url 'member:orders' %}" class="text-decoration-none text-white">
+              <i class="fa-solid fa-box" style="font-size:18px;"></i>
+              <span class="px-2">Orders</span>
+            </a>
+          </div>
+          <div class='py-2'>
+            <a href="{% url 'member:profile_settings' %}" class="text-decoration-none text-white">
+              <i class="fa-solid fa-user" style='font-size:18px;'></i>
+              <span class="px-2">Profile Settings</span>
+            </a>
+          </div>
+        </div>
       </div>
-      <hr>
-      <div class="mb-auto">
-        <div class='py-2'>
-          <a href="{% url 'member:orders' %}" class="text-decoration-none text-white">
-            <i class="fa-solid fa-box" style="font-size:18px;"></i>
-            <span class="px-2">Orders</span>
-          </a>
-        </div>
-        <div class='py-2'>
-          <a href="{% url 'member:history' %}" class="text-decoration-none text-white">
-            <i class="fa-solid fa-clock-rotate-left" style='font-size:18px;'></i>
-            <span class="px-2">History</span>
-          </a>
-        </div>
-        <div class='py-2'>
-          <a href="{% url 'member:profile_settings' %}" class="text-decoration-none text-white">
-            <i class="fa-solid fa-user" style='font-size:18px;'></i>
-            <span class="px-2">Profile Settings</span>
-          </a>
-        </div>
-        <div class='py-2'>
-          <a href="#" class="text-decoration-none text-white">
-            <i class="fa-solid fa-user" style='font-size:18px;'></i>
-            <span class="px-2">My Credit: {{request.credit}}$</span>
-          </a>
-        </div>
-      </div>
-      <hr>
-      <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>
     </div>
   </div>
   
-  <div class='container-fluid w-75' style='margin-left: 25%;'>
+  <div id='main' class='container-fluid'>
     {% block main %}
     {% endblock %}
   </div>
