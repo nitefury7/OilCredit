@@ -8,10 +8,12 @@ from employee.forms import EmployeeProfileForm, OrderForm, SetCredit
 from member.models import Invoice, MemberProfile
 from datetime import datetime
 
+
 @ensure_auth(EmployeeProfile)
 def dashboard(request):
     invoices = Invoice.objects.filter(approved_by=None).order_by('-date')
     return render(request, 'employee/dashboard.html', {'invoices': invoices})
+
 
 @ensure_auth(EmployeeProfile)
 def approve_invoice(request, id):
@@ -22,8 +24,9 @@ def approve_invoice(request, id):
         invoice.save()
     return redirect('employee:dashboard')
 
+
 @ensure_auth(EmployeeProfile)
-def cancel_invoice(request, id):
+def cancel_invoice(_, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
         if not invoice.approved():
@@ -33,6 +36,7 @@ def cancel_invoice(request, id):
                 invoice.delete()
     return redirect('employee:dashboard')
 
+
 @ensure_auth(EmployeeProfile)
 def place_order(request):
     form = OrderForm()
@@ -40,9 +44,11 @@ def place_order(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             member = form.cleaned_data['member']
-            cost = form.cleaned_data['item'].rate * form.cleaned_data['quantity']
+            cost = form.cleaned_data['item'].rate * \
+                form.cleaned_data['quantity']
             if (member.credit < cost):
-                messages.error(request, f"{member.user.username} does not have sufficient credits for this purchase.")
+                messages.error(
+                    request, f"{member.user.username} does not have sufficient credits for this purchase.")
                 return redirect('employee:place_order')
             member.credit -= cost
 
@@ -55,14 +61,17 @@ def place_order(request):
             with transaction.atomic():
                 member.save()
                 invoice.save()
-            messages.success(request, "Your order has been placed successfully.")
+            messages.success(
+                request, "Your order has been placed successfully.")
             return redirect('employee:place_order')
         else:
             messages.error(request, "Sorry, your order couldn't be processed.")
             return redirect('employee:place_order')
-    return render(request, 'employee/place_order.html', {'form' : form})
+    return render(request, 'employee/place_order.html', {'form': form})
 
 # TODO: complete this
+
+
 @ensure_auth(EmployeeProfile)
 def set_credit(request):
     form = SetCredit()
@@ -74,7 +83,7 @@ def set_credit(request):
             if form.is_valid():
                 return redirect('employee:dashboard')
 
-    return render(request, 'employee/set_credit.html', {'form' : form})
+    return render(request, 'employee/set_credit.html', {'form': form})
 
 
 @ensure_auth(EmployeeProfile)

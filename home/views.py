@@ -35,9 +35,11 @@ def login(request):
             messages.error(request, "Invalid username or password.")
     return render(request, 'home/login.html', {'form': form})
 
+
 def logout(request):
     auth_logout(request)
     return redirect('home:home')
+
 
 @redirect_if_auth
 def signup(request):

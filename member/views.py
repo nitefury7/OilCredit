@@ -7,7 +7,7 @@ from home.utils import ensure_auth, get_profile
 from datetime import datetime
 from django.db import transaction
 
-# Create your views here.
+
 @ensure_auth(MemberProfile)
 def orders(request):
     member = get_profile(MemberProfile, request.user)
@@ -16,9 +16,11 @@ def orders(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            cost = form.cleaned_data['item'].rate * form.cleaned_data['quantity']
+            cost = form.cleaned_data['item'].rate * \
+                form.cleaned_data['quantity']
             if (member.credit < cost):
-                messages.error(request, "You do not have sufficient credits for this purchase.")
+                messages.error(
+                    request, "You do not have sufficient credits for this purchase.")
                 return redirect('member:orders')
             member.credit -= cost
 
@@ -29,12 +31,13 @@ def orders(request):
             with transaction.atomic():
                 member.save()
                 invoice.save()
-            messages.success(request, "Your order has been placed successfully.")
+            messages.success(
+                request, "Your order has been placed successfully.")
             return redirect('member:orders')
         else:
             messages.error(request, "Sorry, your order couldn't be processed.")
             return redirect('member:orders')
-            
+
     invoices = Invoice.objects.filter(member=member).order_by('-date')
     return render(
         request,

@@ -3,6 +3,7 @@ from employee.models import EmployeeProfile
 from django.shortcuts import redirect
 from django.http import Http404
 
+
 def redirect_if_auth(fn):
     def inner(request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -13,11 +14,13 @@ def redirect_if_auth(fn):
         return fn(request, *args, **kwargs)
     return inner
 
+
 def get_profile(model, user):
     if model.objects.filter(user=user).exists():
         return model.objects.get(user=user)
     else:
         return None
+
 
 def ensure_auth(model):
     def decorator(fn):

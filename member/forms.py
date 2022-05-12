@@ -20,7 +20,8 @@ class OrderForm(forms.ModelForm):
                 Div('quantity', css_class='col-md-6'),
                 css_class='row',
             ),
-            ButtonHolder(Submit('submit', 'Submit', css_class='btn btn-warning my-2')),
+            ButtonHolder(Submit('submit', 'Submit',
+                         css_class='btn btn-warning my-2')),
         )
 
 
@@ -29,9 +30,11 @@ class AddCredit(forms.ModelForm):
         model = MemberProfile
         fields = ['credit']
 
+
 class MemberProfileForm(forms.Form):
     email = forms.EmailField(required=False)
-    member_type = forms.ModelChoiceField(queryset=MemberType.objects.all(), required = False )
+    member_type = forms.ModelChoiceField(
+        queryset=MemberType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
     gender = forms.ChoiceField(
@@ -88,7 +91,7 @@ class MemberProfileForm(forms.Form):
         self.user.email = data['email']
         self.user.first_name = data['first_name']
         self.user.last_name = data['last_name']
-        
+
         self.member_profile.member_type = data['member_type']
         self.member_profile.gender = data['gender']
         self.member_profile.city = data['city']

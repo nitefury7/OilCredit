@@ -19,10 +19,12 @@ class SignUpForm(forms.Form):
     ), validators=(x.validate for x in validators), help_text=password_validators_help_text_html(validators))
     confirm_password = forms.CharField(widget=forms.PasswordInput())
     email = forms.EmailField(required=False)
-    member_type = forms.ModelChoiceField(queryset=MemberType.objects.all(), required= False)
+    member_type = forms.ModelChoiceField(
+        queryset=MemberType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
-    gender = forms.ChoiceField(choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
+    gender = forms.ChoiceField(
+        choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
     city = forms.CharField(max_length=20, required=False)
     state = forms.CharField(max_length=20, required=False)
     zip_code = forms.IntegerField(required=False)

@@ -14,10 +14,12 @@ class OrderForm(forms.ModelForm):
         model = Invoice
         fields = ['member', 'item', 'quantity']
 
+
 class SetCredit(forms.ModelForm):
     class Meta:
         model = MemberProfile
-        fields = ['user','credit']
+        fields = ['user', 'credit']
+
 
 class EmployeeProfileForm(forms.Form):
     email = forms.EmailField(required=False)
@@ -30,7 +32,8 @@ class EmployeeProfileForm(forms.Form):
     zip_code = forms.IntegerField(required=False)
     contact = PhoneNumberField(required=False)
     post = forms.CharField(max_length=20)
-    employee_type = forms.ChoiceField(choices = (('T', 'Temporary'), ('P', 'Permanent'),))
+    employee_type = forms.ChoiceField(
+        choices=(('T', 'Temporary'), ('P', 'Permanent'),))
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,7 +51,8 @@ class EmployeeProfileForm(forms.Form):
         self.fields['post'].initial = self.employee_profile.post
         self.fields['employee_type'].initial = self.employee_profile.employee_type
 
-        self.fields['first_name'].widget.attrs.update({'autofocus': 'autofocus'})
+        self.fields['first_name'].widget.attrs.update(
+            {'autofocus': 'autofocus'})
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -81,7 +85,7 @@ class EmployeeProfileForm(forms.Form):
         self.user.email = data['email']
         self.user.first_name = data['first_name']
         self.user.last_name = data['last_name']
-        
+
         self.employee_profile.employment_date = datetime.now()
         self.employee_profile.employee_type = data['employee_type']
         self.employee_profile.post = data['post']
