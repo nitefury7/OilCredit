@@ -4,15 +4,14 @@
 {% block main %}
 <div class="container row py-3">
     <h1>Profile Settings</h1>
-    {% crispy form %}
     {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-danger" role="alert">
-      {{message}}
-    </div>
+      {{message | bootstrap_message}}
     {% endfor %}
     {% endif %}
+    {% crispy form %}
 </div>
+
 <div class="container row py-3">
     <h1>Change Password</h1>
     <form method='post'>
@@ -20,12 +19,5 @@
       {{ change_password | crispy }}
       <input value='Submit' name='change_password' type='submit' class='btn btn-warning'/>
     </form>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-danger" role="alert">
-      {{message}}
-    </div>
-    {% endfor %}
-    {% endif %}
 </div>
 {% endblock %}

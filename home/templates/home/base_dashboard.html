@@ -1,0 +1,45 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block header %}
+<header>
+  <div class="container-fluid py-1 bg-danger sticky-top d-flex align-items-center">
+    <button type='button' class="btn btn-danger" onclick='toggle_sidebar();'>
+      <i class="fa-solid fa-bars"></i>
+    </button> 
+    <span class="fs-4 mx-3 text-white">𝄜 Dashboard</span>
+    <div class='ms-auto d-flex'>
+      {% block user_tools %}
+        <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>
+      {% endblock %}
+    </div>
+  </div>
+</header>
+{% endblock %}
+
+{% block extrastyle %}
+<link href="{% static 'home/base_dashboard.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrascripts %}
+<script src="{% static 'home/base_dashboard.js' %}"></script>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block content %}
+<div class='container-fluid px-0 d-flex justify-content-between'>
+  <div id='sidebar'>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark h-100">
+      {% block sidebar %}
+      {% endblock %}
+    </div>
+  </div>
+  
+  <div id='main' class='container-fluid'>
+    {% block main %}
+    {% endblock %}
+  </div>
+</div>
+{% endblock %}

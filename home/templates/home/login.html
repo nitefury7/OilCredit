@@ -1,5 +1,6 @@
 {% extends 'home/base.html' %}
 {% load crispy_forms_tags %}
+{% load bootstrap_message %}
 
 {% block content %}
 <div class="container-fluid my-3" style="min-height: 90vh;">
@@ -11,15 +12,7 @@
   <div class="col-md-4 offset-x-2">
     {% if messages %}
       {% for message in messages %}
-        {% if message.tags == 'error' %}
-        <div class="alert alert-danger" role="alert">
-          {{message}}
-        </div>
-        {% else %}
-          <div class="alert alert-{{message.tags}}" role="alert">
-            {{message}}
-          </div>
-        {% endif %}
+      {{ message | bootstrap_message }}
       {% endfor %}
     {% endif %}
     <form method='POST'>
