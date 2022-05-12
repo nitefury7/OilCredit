@@ -42,8 +42,9 @@
           <td>{{ invoice.quantity }}</td>
           <td>{{ invoice.date}}</td>
           <td>
-            {% if invoice.approved %}
+            {% if invoice.approved_by %}
               <i class="fs-2 text-success fa-solid fa-circle-check opacity-75"></i>
+              {{ invoice.approved_by.user.username }} at {{ invoice.approval_timestamp }}
             {% else %}
               <a class='btn btn-sm btn-danger rounded-circle' href="{% url 'member:cancel_order' invoice.pk %}">
                   <i class="fa-solid fa-ban"></i>

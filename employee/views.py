@@ -10,14 +10,15 @@ from datetime import datetime
 
 @ensure_auth(EmployeeProfile)
 def dashboard(request):
-    invoices = Invoice.objects.filter(approved=False).order_by('-date')
+    invoices = Invoice.objects.filter(approved_by=None).order_by('-date')
     return render(request, 'employee/dashboard.html', {'invoices': invoices})
 
 @ensure_auth(EmployeeProfile)
 def approve_invoice(request, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        invoice.approved = True
+        invoice.approved_by = EmployeeProfile.objects.get(user=request.user)
+        invoice.approval_timestamp = datetime.now()
         invoice.save()
     return redirect('employee:dashboard')
 
@@ -25,7 +26,7 @@ def approve_invoice(request, id):
 def cancel_invoice(request, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        if not invoice.approved:
+        if not invoice.approved():
             invoice.member.credit += invoice.item.rate * invoice.quantity
             with transaction.atomic():
                 invoice.member.save()
@@ -48,7 +49,8 @@ def place_order(request):
             invoice = form.save(commit=False)
             invoice.member = member
             invoice.date = datetime.now()
-            invoice.approved = True
+            invoice.approved_by = MemberProfile.objects.get(user=request.user)
+            invoice.approval_timestamp = datetime.now()
 
             with transaction.atomic():
                 member.save()
@@ -67,7 +69,7 @@ def set_credit(request):
     if request.method == 'POST':
         form = SetCredit(request.POST)
         if MemberProfile.objects.filter(pk=form.cleaned_data.user).exists():
-            member = MemberProfile.get(pk=form.cleaned_data.user)
+            member = MemberProfile.objects.get(pk=form.cleaned_data.user)
             form = SetCredit(request.POST, instance=member)
             if form.is_valid():
                 return redirect('employee:dashboard')

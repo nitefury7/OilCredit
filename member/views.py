@@ -24,7 +24,6 @@ def orders(request):
             invoice = form.save(commit=False)
             invoice.member = member
             invoice.date = datetime.now()
-            invoice.approved = False
 
             with transaction.atomic():
                 member.save()
@@ -49,7 +48,7 @@ def cancel_order(request, id):
     member = MemberProfile.objects.get(user=request.user)
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        if not invoice.approved and member == invoice.member:
+        if not invoice.approved() and member == invoice.member:
             invoice.member.credit += invoice.item.rate * invoice.quantity
             with transaction.atomic():
                 invoice.member.save()

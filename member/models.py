@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from phonenumber_field.modelfields import PhoneNumberField
 from django.core.validators import  MinValueValidator
 
+from employee.models import EmployeeProfile
+
 
 class Item(models.Model):
     name = models.CharField(max_length=100)
@@ -43,7 +45,13 @@ class Invoice(models.Model):
     quantity = models.PositiveIntegerField(validators=[MinValueValidator(1)])
     date = models.DateTimeField()
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    approved = models.BooleanField(default=False)
+    approved_by = models.ForeignKey(EmployeeProfile, on_delete=models.CASCADE, blank=True, null=True)
+    approval_timestamp = models.DateTimeField(blank=True, null=True)
+    
+    def approved(self):
+        return self.approved_by is not None
+
+        
 
     def __str__(self):
-        return f"{self.member.user.username} {'ordered' if self.approved else 'requested'} {self.quantity} {self.item.name} "
+        return f"{self.member.user.username} {'ordered' if self.approved() else 'requested'} {self.quantity} {self.item.name} "
