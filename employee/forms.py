@@ -8,6 +8,7 @@ from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 from datetime import datetime
 from home.models import Gender
 from member.models import Invoice, MemberProfile
+from django.core.validators import MinValueValidator
 
 
 class OrderForm(forms.ModelForm):
@@ -16,10 +17,18 @@ class OrderForm(forms.ModelForm):
         fields = ['member', 'item', 'quantity']
 
 
-class SetCredit(forms.ModelForm):
-    class Meta:
-        model = MemberProfile
-        fields = ['user', 'credit']
+class SetCredit(forms.Form):
+    member = forms.ModelChoiceField(
+        queryset=MemberProfile.objects.select_related('user').all()
+    )
+    credit = forms.FloatField(validators=(MinValueValidator(0), ))
+
+    def save(self, commit=True):
+        member = self.cleaned_data['member']
+        member.credit = self.cleaned_data['credit']
+        if commit:
+            member.save()
+        return member
 
 
 class EmployeeProfileForm(forms.Form):

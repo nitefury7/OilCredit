@@ -83,15 +83,13 @@ def place_order(request):
 
 @ensure_auth(EmployeeProfile)
 def set_credit(request):
-    # TODO: complete this
     form = SetCredit()
     if request.method == 'POST':
         form = SetCredit(request.POST)
-        member = get_profile(MemberProfile, form.cleaned_data.user)
-        if member:
-            form = SetCredit(request.POST, instance=member)
-            if form.is_valid():
-                return redirect('employee:dashboard')
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Successfully changed credit of user.')
+            return redirect('employee:set_credit')
 
     return render(request, 'employee/set_credit.html', {'form': form})
 
