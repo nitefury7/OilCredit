@@ -20,13 +20,15 @@ def orders(request):
                 form.cleaned_data['quantity']
             if (member.credit < cost):
                 messages.error(
-                    request, "You do not have sufficient credits for this purchase.")
+                    request,
+                    "You do not have sufficient credits for this purchase."
+                )
                 return redirect('member:orders')
             member.credit -= cost
 
             invoice = form.save(commit=False)
             invoice.member = member
-            invoice.date = datetime.now()
+            invoice.order_timestamp = datetime.now()
 
             with transaction.atomic():
                 member.save()
@@ -38,11 +40,11 @@ def orders(request):
             messages.error(request, "Sorry, your order couldn't be processed.")
             return redirect('member:orders')
 
-    invoices = Invoice.objects.filter(member=member).order_by('-date')
+    invoices = Invoice.objects.filter(member=member).order_by('-order_timestamp')
     return render(
         request,
         'member/orders.html',
-        {'form': form, 'invoices': invoices}
+        {'member': member, 'form': form, 'invoices': invoices}
     )
 
 
@@ -51,12 +53,14 @@ def cancel_order(request, id):
     member = get_profile(MemberProfile, request.user)
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        if not invoice.approved() and member == invoice.member:
+        if invoice.status == Invoice.Status.PENDING and member == invoice.member:
             invoice.member.credit += invoice.item.rate * invoice.quantity
             with transaction.atomic():
                 invoice.member.save()
                 invoice.delete()
             messages.success(request, 'Your order has been cancelled.')
+    else:
+        messages.error('Invalid order')
 
     return redirect('member:orders')
 
@@ -70,12 +74,18 @@ def profile_settings(request):
             change_password = PasswordChangeForm(request.user, request.POST)
             if change_password.is_valid():
                 change_password.save()
+                messages.success(request, 'Password changed successfully')
                 return redirect('home:login')
         else:
             form = MemberProfileForm(request.user, request.POST)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Updated profile information')
                 return redirect('member:profile_settings')
 
     member = get_profile(MemberProfile, request.user)
-    return render(request, 'member/profile_settings.html', {'form': form, 'change_password': change_password})
+    return render(
+        request,
+        'member/profile_settings.html',
+        {'member': member, 'form': form, 'change_password': change_password}
+    )

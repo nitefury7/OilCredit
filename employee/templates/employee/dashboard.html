@@ -1,8 +1,14 @@
 {% extends 'employee/base.html' %}
+{% load bootstrap_message %}
 
 {% block main %}
 <div class='container-fluid py-5'>
     <h1>Pending Invoices</h1>
+    {% if messages %}
+    {% for message in messages %}
+      {{ message | bootstrap_message }}
+    {% endfor %}
+    {% endif %}
     <table class='table table-striped'>
         <thead>
             <tr>
@@ -19,12 +25,12 @@
                 <td>{{ invoice.member }}</td>
                 <td>{{ invoice.item }}</td>
                 <td>{{ invoice.quantity }}</td>
-                <td>{{ invoice.date}}</td>
+                <td>{{ invoice.order_timestamp}}</td>
                 <td>
                     <a class='mx-2 btn btn-success rounded-circle' href="{% url 'employee:approve_invoice' invoice.pk %}">
                         <i class="fa-solid fa-circle-check"></i>
                     </a>
-                    <a class='mx-2 btn btn-danger rounded-circle' href="{% url 'employee:cancel_invoice' invoice.pk %}">
+                    <a class='mx-2 btn btn-danger rounded-circle' href="{% url 'employee:reject_invoice' invoice.pk %}">
                         <i class="fa-solid fa-ban"></i>
                     </a>
                 </td>

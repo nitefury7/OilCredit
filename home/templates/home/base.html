@@ -31,34 +31,32 @@
 
 <body>
     {% block header %}
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+    <header class="container-fluid p-3 bg-dark text-white">
+            <div class="d-flex flex-wrap align-items-center justify-content-center">
                 <a href="{% url 'home:home' %}" class="d-flex align-items-center mb-2 px-4 mb-lg-0 text-white text-decoration-none">
                     <i class="fa fa-car" style="font-size:36px;"></i>
                 </a>
 
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                <ul class="nav col-12 col-lg-auto me-lg-auto justify-content-center">
                     <li><a href="{% url 'home:home' %}" class="nav-link px-2 text-white">Home</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Features</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
+                    <li><a href="#" class="nav-link text-white">Features</a></li>
+                    <li><a href="#" class="nav-link text-white">Pricing</a></li>
+                    <li><a href="#" class="nav-link text-white">FAQs</a></li>
+                    <li><a href="#" class="nav-link text-white">About</a></li>
                 </ul>
 
                 {% if not user.is_authenticated %}
-                <div class="text-end">
-                    <a href="{% url 'home:login' %}" class="btn btn-outline-light me-2">Login</a>
+                <div class="text-end d-flex gap-2">
+                    <a href="{% url 'home:login' %}" class="btn btn-outline-light">Login</a>
                     <a href="{% url 'home:signup' %}" class="btn btn-warning">Sign Up</a>
                 </div>
                 {% else %}
-                <div class="text-end">
-                    <span class='px-2'> {{request.user}} </span>
+                <div class="text-end d-flex align-items-center gap-2">
+                    <span> {{request.user}} </span>
                     <a href="{% url 'home:logout' %}" class="btn btn-warning">Logout</a>
                 </div>
                 {% endif %}
             </div>
-        </div>
     </header>
     {% endblock %}
 

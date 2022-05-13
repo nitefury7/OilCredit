@@ -2,6 +2,7 @@ from django import forms
 from django.db import transaction
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
+from home.models import Gender
 from member.models import MemberProfile, MemberType
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
@@ -23,8 +24,7 @@ class SignUpForm(forms.Form):
         queryset=MemberType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
-    gender = forms.ChoiceField(
-        choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
+    gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)
     city = forms.CharField(max_length=20, required=False)
     state = forms.CharField(max_length=20, required=False)
     zip_code = forms.IntegerField(required=False)

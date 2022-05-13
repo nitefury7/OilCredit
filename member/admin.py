@@ -8,7 +8,7 @@ admin.site.register(MemberType)
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'member', 'date', 'approved_by',)
+    list_display = ('__str__', 'member', 'order_timestamp', 'employee',)
 
 
 admin.site.register(Invoice, InvoiceAdmin)

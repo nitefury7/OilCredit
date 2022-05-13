@@ -1,6 +1,7 @@
 from django import forms
 from django.db import transaction
 from phonenumber_field.formfields import PhoneNumberField
+from home.models import Gender
 from member.models import MemberProfile, MemberType, Invoice
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
@@ -37,8 +38,7 @@ class MemberProfileForm(forms.Form):
         queryset=MemberType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
-    gender = forms.ChoiceField(
-        choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
+    gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)
     city = forms.CharField(max_length=20, required=False)
     state = forms.CharField(max_length=20, required=False)
     zip_code = forms.IntegerField(required=False)
@@ -59,7 +59,7 @@ class MemberProfileForm(forms.Form):
         self.fields['zip_code'].initial = self.member_profile.zip_code
         self.fields['contact'].initial = self.member_profile.contact
 
-        self.fields['email'].widget.attrs.update({'autofocus': 'autofocus'})
+        self.fields['first_name'].widget.attrs.update({'autofocus': 'autofocus'})
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(

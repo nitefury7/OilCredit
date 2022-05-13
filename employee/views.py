@@ -11,7 +11,8 @@ from datetime import datetime
 
 @ensure_auth(EmployeeProfile)
 def dashboard(request):
-    invoices = Invoice.objects.filter(approved_by=None).order_by('-date')
+    invoices = Invoice.objects.filter(
+        status=Invoice.Status.PENDING).order_by('-order_timestamp')
     return render(request, 'employee/dashboard.html', {'invoices': invoices})
 
 
@@ -19,21 +20,31 @@ def dashboard(request):
 def approve_invoice(request, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        invoice.approved_by = get_profile(EmployeeProfile, request.user)
-        invoice.approval_timestamp = datetime.now()
+        invoice.employee = get_profile(EmployeeProfile, request.user)
+        invoice.action_timestamp = datetime.now()
+        invoice.status = Invoice.Status.APPROVED
         invoice.save()
+        messages.success(request, 'The invoice has been approved.')
+    else:
+        messages.error(request, 'The invoice does not exist.')
     return redirect('employee:dashboard')
 
 
 @ensure_auth(EmployeeProfile)
-def cancel_invoice(_, id):
+def reject_invoice(request, id):
     if Invoice.objects.filter(pk=id).exists():
         invoice = Invoice.objects.get(pk=id)
-        if not invoice.approved():
+        if invoice.status == Invoice.Status.PENDING:
             invoice.member.credit += invoice.item.rate * invoice.quantity
+            invoice.employee = get_profile(EmployeeProfile, request.user)
+            invoice.action_timestamp = datetime.now()
+            invoice.status = Invoice.Status.REJECTED
             with transaction.atomic():
                 invoice.member.save()
-                invoice.delete()
+                invoice.save()
+            messages.success(request, 'The invoice has been rejected.')
+    else:
+        messages.error(request, 'Invalid invoice')
     return redirect('employee:dashboard')
 
 
@@ -54,9 +65,9 @@ def place_order(request):
 
             invoice = form.save(commit=False)
             invoice.member = member
-            invoice.date = datetime.now()
-            invoice.approved_by = get_profile(EmployeeProfile, request.user)
-            invoice.approval_timestamp = datetime.now()
+            invoice.action_timestamp = invoice.order_timestamp = datetime.now()
+            invoice.employee = get_profile(EmployeeProfile, request.user)
+            invoice.status = Invoice.Status.APPROVED
 
             with transaction.atomic():
                 member.save()
@@ -69,11 +80,10 @@ def place_order(request):
             return redirect('employee:place_order')
     return render(request, 'employee/place_order.html', {'form': form})
 
-# TODO: complete this
-
 
 @ensure_auth(EmployeeProfile)
 def set_credit(request):
+    # TODO: complete this
     form = SetCredit()
     if request.method == 'POST':
         form = SetCredit(request.POST)
@@ -95,10 +105,13 @@ def profile_settings(request):
             change_password = PasswordChangeForm(request.user, request.POST)
             if change_password.is_valid():
                 change_password.save()
+                messages.success(request, 'Password changed successfully.')
                 return redirect('home:login')
         else:
             form = EmployeeProfileForm(request.user, request.POST)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Updated profile settings.')
                 return redirect('employee:profile_settings')
+                
     return render(request, 'employee/profile_settings.html', {'form': form, 'change_password': change_password})

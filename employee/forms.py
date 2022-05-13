@@ -2,10 +2,11 @@
 from django import forms
 from django.db import transaction
 from phonenumber_field.formfields import PhoneNumberField
-from employee.models import EmployeeProfile
+from employee.models import EmployeeProfile, EmployeeType
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 from datetime import datetime
+from home.models import Gender
 from member.models import Invoice, MemberProfile
 
 
@@ -25,15 +26,16 @@ class EmployeeProfileForm(forms.Form):
     email = forms.EmailField(required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
-    gender = forms.ChoiceField(
-        choices=(('M', 'Male'), ('F', 'Female'), ('O', 'Other')))
+    gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)
     city = forms.CharField(max_length=20, required=False)
     state = forms.CharField(max_length=20, required=False)
     zip_code = forms.IntegerField(required=False)
     contact = PhoneNumberField(required=False)
     post = forms.CharField(max_length=20)
-    employee_type = forms.ChoiceField(
-        choices=(('T', 'Temporary'), ('P', 'Permanent'),))
+    employee_type = forms.TypedChoiceField(
+        choices=EmployeeType.choices,
+        coerce=int,
+    )
 
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,7 +54,9 @@ class EmployeeProfileForm(forms.Form):
         self.fields['employee_type'].initial = self.employee_profile.employee_type
 
         self.fields['first_name'].widget.attrs.update(
-            {'autofocus': 'autofocus'})
+            {'autofocus': 'autofocus'}
+        )
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
