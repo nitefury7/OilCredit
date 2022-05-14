@@ -1,19 +1,31 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import PasswordChangeForm
-from django.db import transaction
-from django.contrib import messages
-from home.utils import ensure_auth, get_profile
-from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, EmployeeOrderForm, SetCredit
-from member.models import Invoice
 from datetime import datetime
 
+from django.db import transaction
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+from django.views.generic import ListView, FormView
+from django.utils.decorators import method_decorator
+from django.shortcuts import render, redirect
 
-@ensure_auth(EmployeeProfile)
-def dashboard(request):
-    invoices = Invoice.objects.filter(
-        status=Invoice.Status.PENDING).order_by('-order_timestamp')
-    return render(request, 'employee/dashboard.html', {'invoices': invoices})
+from home.utils import ensure_auth, get_profile
+from member.models import Invoice
+from employee.models import EmployeeProfile
+from employee.forms import EmployeeProfileForm, EmployeeOrderForm, SetCredit
+
+
+@method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
+class Dashboard(ListView):
+    model = Invoice
+    template_name = 'employee/dashboard.html'
+    context_object_name = 'invoices'
+
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        return (
+            queryset
+            .filter(status=Invoice.Status.PENDING)
+            .order_by('-order_timestamp')
+        )
 
 
 @ensure_auth(EmployeeProfile)
@@ -48,30 +60,34 @@ def reject_invoice(request, id):
     return redirect('employee:dashboard')
 
 
-@ensure_auth(EmployeeProfile)
-def place_order(request):
-    profile = get_profile(EmployeeProfile, request.user)
-    form = EmployeeOrderForm(profile)
-    if request.method == 'POST':
-        form = EmployeeOrderForm(profile, request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success( request, "Your order has been placed successfully.")
-            return redirect('employee:place_order')
-    return render(request, 'employee/place_order.html', {'form': form})
+@method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
+class PlaceOrder(FormView):
+    template_name = 'employee/place_order.html'
+    form_class = EmployeeOrderForm
 
+    def get_form_kwargs(self):
+        employee = get_profile(EmployeeProfile, self.request.user)
+        kwargs = super().get_form_kwargs()
+        kwargs['employee'] = employee
+        return kwargs
 
-@ensure_auth(EmployeeProfile)
-def set_credit(request):
-    form = SetCredit()
-    if request.method == 'POST':
-        form = SetCredit(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Successfully changed credit of user.')
-            return redirect('employee:set_credit')
+    def form_valid(self, form):
+        form.save()
+        messages.success(
+            self.request,
+            "The order has been placed successfully."
+        )
+        return redirect('employee:place_order')
 
-    return render(request, 'employee/set_credit.html', {'form': form})
+@method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
+class SetCredit(FormView):
+    template_name = 'employee/set_credit.html'
+    form_class = SetCredit
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Successfully changed credit of user.')
+        return redirect('employee:set_credit')
 
 
 @ensure_auth(EmployeeProfile)
