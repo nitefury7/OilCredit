@@ -35,6 +35,21 @@
         <div class="col-3 bg-dark text-light" id="sidebar">
             <div class="sticky-top">
                 {% block sidebar %}
+                  {% block sidebar_user_icon%}
+                    <div class='text-center mt-4'>
+                      <i class="text-center display-1 fa-regular fa-circle-user"></i>
+                    </div>
+                  {% endblock %}
+
+                  {% block sidbar_user_info %}
+                  {% endblock %}
+
+                  {% block sidbar_nav_header %}
+                    <h3 class='mt-5 p-1 px-4'> Navigation </h3>
+                  {% endblock %}
+
+                  {% block sidebar_nav %}
+                  {% endblock %}
                 {% endblock %}
             </div>
         </div>

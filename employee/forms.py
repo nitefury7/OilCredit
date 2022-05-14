@@ -16,7 +16,6 @@ class EmployeeOrderForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = ['member', 'item', 'quantity']
-        
 
     def __init__(self, employee, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -42,6 +41,7 @@ class EmployeeOrderForm(forms.ModelForm):
             invoice.member.save()
             invoice.save()
         return (invoice, invoice.member)
+
 
 class SetCredit(forms.Form):
     member = forms.ModelChoiceField(
@@ -114,7 +114,7 @@ class EmployeeProfileForm(forms.Form):
                 css_class='row',
             ),
             ButtonHolder(
-                Submit('submit', 'Submit',
+                Submit('profile_form', 'Submit',
                        css_class='btn btn-warning my-2')
             ),
         )

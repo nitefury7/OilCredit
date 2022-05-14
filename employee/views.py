@@ -92,8 +92,6 @@ class SetCredit(FormView):
 
 @ensure_auth(EmployeeProfile)
 def profile_settings(request):
-    form = EmployeeProfileForm(request.user)
-    change_password = PasswordChangeForm(request.user)
     if request.method == 'POST':
         if 'change_password' in request.POST:
             change_password = PasswordChangeForm(request.user, request.POST)
@@ -102,14 +100,16 @@ def profile_settings(request):
                 messages.success(request, 'Password changed successfully.')
                 return redirect('home:login')
         else:
-            form = EmployeeProfileForm(request.user, request.POST)
-            if form.is_valid():
-                form.save()
+            profile_form = EmployeeProfileForm(request.user, request.POST)
+            if profile_form.is_valid():
+                profile_form.save()
                 messages.success(request, 'Updated profile settings.')
                 return redirect('employee:profile_settings')
 
+    profile_form = EmployeeProfileForm(request.user)
+    change_password = PasswordChangeForm(request.user)
     return render(
         request,
         'employee/profile_settings.html',
-        {'form': form, 'change_password': change_password}
+        {'profile_form': profile_form, 'change_password_form': change_password}
     )

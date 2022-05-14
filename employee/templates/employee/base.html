@@ -1,6 +1,10 @@
 {% extends 'home/base_dashboard.html' %}
 
-{% block sidebar %}
+{% block sidbar_user_info %}
+
+{% endblock %}
+
+{% block sidebar_nav %}
 <div class="ms-4 mt-4 d-flex flex-column gap-3">
   <a href="{% url 'employee:dashboard' %}" class="text-decoration-none text-white">
     <i class="fa-solid fa-box" style="font-size:18px;"></i>
