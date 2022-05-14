@@ -11,11 +11,37 @@ from member.models import Invoice, MemberProfile
 from django.core.validators import MinValueValidator
 
 
-class OrderForm(forms.ModelForm):
+class EmployeeOrderForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = ['member', 'item', 'quantity']
+        
 
+    def __init__(self, employee, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.employee = employee
+
+    def clean(self):
+        cleaned_data = super().clean()
+        member = cleaned_data['member']
+        cost = cleaned_data['item'].rate * cleaned_data['quantity']
+        if (member.credit < cost):
+            self.add_error(
+                'quantity',
+                f'{member.user.username} do not have sufficient credits.'
+            )
+        member.credit -= cost
+
+    def save(self, commit=True):
+        invoice = super().save(commit=False)
+        invoice.member.credit -= invoice.item.rate * invoice.quantity
+        invoice.action_timestamp = invoice.order_timestamp = datetime.now()
+        invoice.status = Invoice.Status.APPROVED
+        invoice.employee = self.employee
+        if commit:
+            invoice.member.save()
+            invoice.save()
+        return (invoice, invoice.member)
 
 class SetCredit(forms.Form):
     member = forms.ModelChoiceField(

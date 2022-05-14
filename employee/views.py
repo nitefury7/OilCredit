@@ -4,8 +4,8 @@ from django.db import transaction
 from django.contrib import messages
 from home.utils import ensure_auth, get_profile
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, OrderForm, SetCredit
-from member.models import Invoice, MemberProfile
+from employee.forms import EmployeeProfileForm, EmployeeOrderForm, SetCredit
+from member.models import Invoice
 from datetime import datetime
 
 
@@ -50,33 +50,13 @@ def reject_invoice(request, id):
 
 @ensure_auth(EmployeeProfile)
 def place_order(request):
-    form = OrderForm()
+    profile = get_profile(EmployeeProfile, request.user)
+    form = EmployeeOrderForm(profile)
     if request.method == 'POST':
-        form = OrderForm(request.POST)
+        form = EmployeeOrderForm(profile, request.POST)
         if form.is_valid():
-            member = form.cleaned_data['member']
-            cost = form.cleaned_data['item'].rate * \
-                form.cleaned_data['quantity']
-            if (member.credit < cost):
-                messages.error(
-                    request, f"{member.user.username} does not have sufficient credits for this purchase.")
-                return redirect('employee:place_order')
-            member.credit -= cost
-
-            invoice = form.save(commit=False)
-            invoice.member = member
-            invoice.action_timestamp = invoice.order_timestamp = datetime.now()
-            invoice.employee = get_profile(EmployeeProfile, request.user)
-            invoice.status = Invoice.Status.APPROVED
-
-            with transaction.atomic():
-                member.save()
-                invoice.save()
-            messages.success(
-                request, "Your order has been placed successfully.")
-            return redirect('employee:place_order')
-        else:
-            messages.error(request, "Sorry, your order couldn't be processed.")
+            form.save()
+            messages.success( request, "Your order has been placed successfully.")
             return redirect('employee:place_order')
     return render(request, 'employee/place_order.html', {'form': form})
 
@@ -111,5 +91,9 @@ def profile_settings(request):
                 form.save()
                 messages.success(request, 'Updated profile settings.')
                 return redirect('employee:profile_settings')
-                
-    return render(request, 'employee/profile_settings.html', {'form': form, 'change_password': change_password})
+
+    return render(
+        request,
+        'employee/profile_settings.html',
+        {'form': form, 'change_password': change_password}
+    )
