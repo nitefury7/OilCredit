@@ -1,52 +1,40 @@
-from django.shortcuts import render, redirect
+from datetime import datetime
+
+from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
+from django.views.generic import FormView
+from django.utils.decorators import method_decorator
+from django.shortcuts import render, redirect
+
 from member.forms import MemberProfileForm, OrderForm
 from member.models import MemberProfile, Invoice
 from home.utils import ensure_auth, get_profile
-from datetime import datetime
-from django.db import transaction
 
 
-@ensure_auth(MemberProfile)
-def orders(request):
-    member = get_profile(MemberProfile, request.user)
+@method_decorator(ensure_auth(MemberProfile), name='dispatch')
+class Orders(FormView):
+    template_name = 'member/orders.html'
+    form_class = OrderForm
 
-    form = OrderForm()
-    if request.method == 'POST':
-        form = OrderForm(request.POST)
-        if form.is_valid():
-            cost = form.cleaned_data['item'].rate * \
-                form.cleaned_data['quantity']
-            if (member.credit < cost):
-                messages.error(
-                    request,
-                    "You do not have sufficient credits for this purchase."
-                )
-                return redirect('member:orders')
-            member.credit -= cost
+    def get_form_kwargs(self):
+        member = get_profile(MemberProfile, self.request.user)
+        kwargs = super().get_form_kwargs()
+        kwargs['member'] = member
+        return kwargs
 
-            invoice = form.save(commit=False)
-            invoice.member = member
-            invoice.order_timestamp = datetime.now()
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, "Your order has been placed successfully.")
+        return redirect('member:orders')
 
-            with transaction.atomic():
-                member.save()
-                invoice.save()
-            messages.success(
-                request, "Your order has been placed successfully.")
-            return redirect('member:orders')
-        else:
-            messages.error(request, "Sorry, your order couldn't be processed.")
-            return redirect('member:orders')
-
-    invoices = Invoice.objects.filter(member=member).order_by('-order_timestamp')
-    return render(
-        request,
-        'member/orders.html',
-        {'member': member, 'form': form, 'invoices': invoices}
-    )
-
+    def get_context_data(self, **kwargs):
+        member = get_profile(MemberProfile, self.request.user)
+        context = super().get_context_data(**kwargs)
+        context['member'] = member
+        context['invoices'] = Invoice.objects.filter(
+            member=context['member']).order_by('-order_timestamp')
+        return context
 
 @ensure_auth(MemberProfile)
 def cancel_order(request, id):
@@ -61,7 +49,6 @@ def cancel_order(request, id):
             messages.success(request, 'Your order has been cancelled.')
     else:
         messages.error('Invalid order')
-
     return redirect('member:orders')
 
 

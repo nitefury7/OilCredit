@@ -34,7 +34,6 @@ class EmployeeOrderForm(forms.ModelForm):
 
     def save(self, commit=True):
         invoice = super().save(commit=False)
-        invoice.member.credit -= invoice.item.rate * invoice.quantity
         invoice.action_timestamp = invoice.order_timestamp = datetime.now()
         invoice.status = Invoice.Status.APPROVED
         invoice.employee = self.employee

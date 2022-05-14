@@ -1,10 +1,13 @@
+from datetime import datetime
+
 from django import forms
 from django.db import transaction
 from phonenumber_field.formfields import PhoneNumberField
-from home.models import Gender
-from member.models import MemberProfile, MemberType, Invoice
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
+
+from home.models import Gender
+from member.models import MemberProfile, MemberType, Invoice
 
 
 class OrderForm(forms.ModelForm):
@@ -12,8 +15,9 @@ class OrderForm(forms.ModelForm):
         model = Invoice
         fields = ['item', 'quantity']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, member, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.member = member
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
@@ -24,6 +28,22 @@ class OrderForm(forms.ModelForm):
             ButtonHolder(Submit('submit', 'Submit',
                          css_class='btn btn-warning my-2')),
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        cost = cleaned_data['item'].rate * cleaned_data['quantity']
+        if (self.member.credit < cost):
+            self.add_error( 'quantity', f'You do not have sufficient credits.')
+        self.member.credit -= cost
+
+    def save(self, commit=True):
+        invoice = super().save(commit=False)
+        invoice.member = self.member
+        invoice.order_timestamp = datetime.now()
+        if commit:
+            invoice.member.save()
+            invoice.save()
+        return (invoice, invoice.member)
 
 
 class AddCredit(forms.ModelForm):
