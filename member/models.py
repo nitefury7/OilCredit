@@ -65,6 +65,9 @@ class Invoice(models.Model):
         default=Status.PENDING
     )
 
+    def cost(self):
+        return self.item.rate * self.quantity
+
     def approved(self):
         return self.status == Invoice.Status.APPROVED
 

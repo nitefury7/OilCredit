@@ -1,7 +1,16 @@
 {% extends "admin/base.html" %}
 {% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+{% endblock %}
+
 {% block extrastyle %}
 {{ block.super }}
+<!--font awesome-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
 <style>
      :root {
         --primary: #196b86;
@@ -89,6 +98,59 @@
         border-bottom-color: initial;
         background-color: #ffbb33;
         color: #000;
+    }
+
+    .stats-counter {
+        display: flex;
+        flex-flow: wrap;
+        align-items: center;
+        justify-content: space-around;
+        gap: 3rem;
+        margin-left: 2rem;
+    }
+
+    .stats-counter > * {
+        background-color: rgba(255, 0, 0, 0.2);
+        font-size: 1.5em;
+        border: 1px solid red;
+        border-radius: 20px;
+        color: var(--body-fg);
+        padding: 1.5em;
+        text-align: center;
+    }
+    .stats-counter>div>* {
+        font-weight: bold;
+        margin-bottom: 0.4rem;
+    }
+
+    .dashboard #content {
+        width: initial;
+    }
+
+    #content-main {
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+    }
+    .stats-main {
+        display: flex;
+        margin-top: 2rem;
+        gap: 50px;
+        flex-flow: wrap;
+        align-items: center;
+        justify-content: space-around;
+    } 
+    
+    .stats-charts {
+        display: flex;
+        gap: 50px;
+        flex-flow: wrap;
+        align-items: center;
+        justify-content: space-around;
+    }
+    .stats-charts > * {
+        max-height: 500px;
+        max-width: 500px;
     }
 </style>
 {% endblock %}

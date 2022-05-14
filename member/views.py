@@ -1,6 +1,7 @@
-from datetime import datetime
+import json
 
 from django.db import transaction
+from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import FormView
@@ -8,7 +9,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 
 from member.forms import MemberProfileForm, OrderForm
-from member.models import MemberProfile, Invoice
+from member.models import Item, MemberProfile, Invoice
 from home.utils import ensure_auth, get_profile
 
 
@@ -51,6 +52,17 @@ def cancel_order(request, id):
         messages.error('Invalid order')
     return redirect('member:orders')
 
+@ensure_auth(MemberProfile)
+def spendings_by_product(request):
+    member = get_profile(MemberProfile, request.user)
+    items = Item.objects.all()
+    sales_dict = {}
+    for item in items:
+        invoices = Invoice.objects.filter(
+            item=item, status=Invoice.Status.APPROVED, member=member)
+        sales = sum(invoice.cost() for invoice in invoices)
+        sales_dict[str(item)] = sales
+    return HttpResponse(json.dumps(sales_dict), content_type='application/json')
 
 @ensure_auth(MemberProfile)
 def profile_settings(request):

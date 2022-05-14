@@ -11,6 +11,8 @@ def redirect_if_auth(fn):
                 return redirect('member:orders')
             elif EmployeeProfile.objects.filter(user=request.user).exists():
                 return redirect('employee:dashboard')
+            elif request.user.is_superuser:
+                return redirect('admin:index')
         return fn(request, *args, **kwargs)
     return inner
 

@@ -1,0 +1,161 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+  function getRandomColor(opacity='FF') {
+      let letters = '0123456789ABCDEF'.split('');
+      let color = '#';
+      for (let i = 0; i < 6; i++ ) {
+          color += letters[Math.floor(Math.random() * 16)];
+      }
+      color += opacity;
+      return color;
+  }
+
+  $(document).ready(async () => {
+      const ctx = document.getElementById('recent_members').getContext('2d');
+      let response = await fetch("{% url 'admin:recent_members' %}");
+      let json = await response.json();
+      const data = {
+        labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
+        datasets: [{
+          label: 'Recent Members',
+          data: json,
+          backgroundColor: Object.keys(json).map((x) => getRandomColor('50')),
+          borderColor: ['#B000A0'],
+          borderWidth: 1,
+        }]
+      };
+      const config = {
+        type: 'bar',
+        data: data,
+        options: {
+          maintainAspectRatio: true,
+          aspectRatio: 1,
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Signups during the last ten days.'
+            }
+        }
+      };
+      const chart = new Chart(ctx, config);
+  });
+
+  $(document).ready(async () => {
+      const ctx = document.getElementById('recent_sales').getContext('2d');
+      let response = await fetch("{% url 'admin:recent_sales' %}");
+      let json = await response.json();
+      const data = {
+        labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
+        datasets: [{
+          label: 'Recent Sales',
+          data: json,
+          fill: true,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1
+        }]
+      };
+      const config = {
+        type: 'line',
+        data: data,
+        options: {
+          maintainAspectRatio: true,
+          aspectRatio: 1,
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Sales during the last ten days.'
+            }
+        }
+      };
+      const chart = new Chart(ctx, config);
+  });
+
+  $(document).ready(async () => {
+      const ctx = document.getElementById('sales_by_item').getContext('2d');
+      let response = await fetch("{% url 'admin:sales_by_item' %}");
+      let json = await response.json();
+      const data = {
+          labels: Object.keys(json),
+          datasets: [
+              {
+                  label: 'sales_by_item',
+                  data: Object.values(json),
+                  backgroundColor: Object.keys(json).map((x) => getRandomColor()),
+              }
+          ]
+      };
+      const config = {
+          type: 'doughnut',
+          data: data,
+          options: {
+              responsive: true,
+              plugins: {
+                  legend: {
+                      position: 'bottom',
+                  },
+                  title: {
+                      display: true,
+                      text: 'Total Sales by Item'
+                  }
+              }
+          },
+      };
+      const chart = new Chart(ctx, config);
+  });
+</script>
+{% endblock %}
+
+{% block coltype %}{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <div class='stats-main'>
+    <div style='min-width:360px;'>
+      {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+    </div>
+
+    <div class='stats-counter'>
+      <div>
+        <div>Total Sales</div>
+        {{ total_sales }}
+      </div>
+      <div>
+        <div>Members</div>
+        {{ member_count }}
+      </div>
+      <div>
+        <div>Employees</div>
+        {{ employee_count }}
+      </div>
+    </div>
+  </div>
+
+  <!-- canvas container container -->
+  <div class='stats-charts'>
+    <canvas id="sales_by_item" width="500" height="500"></canvas>
+    <canvas id="recent_sales" width="500" height="500"></canvas>
+    <canvas id="recent_members" width="500" height="500"></canvas>
+  </div>
+</div>
+ 
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
