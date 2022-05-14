@@ -2,8 +2,8 @@
 {% load static %}
 
 {% block header %}
-<header>
-  <div class="container-fluid py-1 bg-danger sticky-top d-flex gap-3 align-items-center">
+<header class='fixed-top d-flex w-100'>
+  <div class="container-fluid py-1 bg-danger d-flex gap-3 align-items-center">
     <button type='button' class="btn btn-danger" onclick='toggle_sidebar();'>
       <i class="fa-solid fa-bars"></i>
     </button> 
@@ -23,23 +23,25 @@
 
 {% block extrascripts %}
     <script src="{% static 'home/base_dashboard.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 {% endblock %}
 
 {% block footer %}
 {% endblock %}
 
 {% block content %}
-<div class='container-fluid px-0 d-flex'>
-  <div id='sidebar'>
-    <div class="d-flex flex-column p-3 text-white bg-dark h-100">
-      {% block sidebar %}
-      {% endblock %}
+<div class="container-fluid" id='content_container'>
+    <div class="row">
+        <div class="col-3 bg-dark text-light" id="sidebar">
+            <div class="sticky-top">
+                {% block sidebar %}
+                {% endblock %}
+            </div>
+        </div>
+        <div class="col py-5" id="main">
+            {% block main %}
+            {% endblock %}
+        </div>
     </div>
-  </div>
-  
-  <div id='main' class='container-fluid'>
-    {% block main %}
-    {% endblock %}
-  </div>
 </div>
 {% endblock %}

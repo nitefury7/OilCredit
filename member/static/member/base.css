@@ -1,6 +1,8 @@
 .credit_card {
+    background-color: #3d72b1;
     box-shadow: black 8px 8px 8px;
     border-radius: 25px;
+    width: 350px;
 }
 
 .credit_card_details {

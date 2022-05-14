@@ -1,4 +1,3 @@
-
 {% extends 'member/base.html' %}
 {% load crispy_forms_tags %}
 {% load bootstrap_message %}
@@ -7,10 +6,36 @@
 
 {% block main %}
 <div class='container py-2'>
+  
+  <div class='d-flex flex-wrap gap-5 align-items-center justify-content-evenly'>
+    <!-- credit card-->
+    <div class='credit_card mx-0 container-fluid bg-danger text-light'>
+      <div class='row'>
+        <div class="credit_card_details bg-secondary col-11 p-4 d-flex flex-column">
+          <div class='row align-items-center'>
+            <div class="col">
+              <span> Your Credits </span>
+            </div>
+            <div class="col d-flex">
+              <div class="credit_card_chip ms-auto bg-warning">
+              </div>
+          </div>
+        </div>
+        <h3 class='credit_card_name font-monospace'>{{ member.user.username }}</h3>
+        <h3>**** **** **** ****</h3>
+        <h3 class='mt-auto align-bottom'>$ {{ member.credit }}</h3>
+        </div>
+        <div class="col-1"></div>
+      </div>
+    </div>
+
+    <!-- canvas container container -->
+    <div> <canvas id="myChart" width="400" height="400"></canvas> </div>
+  </div>
 
   {% if messages %}
   {% for message in messages %}
-    {{ message | bootstrap_message }}
+  {{ message | bootstrap_message }}
   {% endfor %}
   {% endif %}
 
@@ -37,40 +62,81 @@
           <td>{{ invoice.quantity }}</td>
           <td>{{ invoice.order_timestamp}}</td>
           <td>
-              {% if status == 'pending' %}
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-sm btn-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#cancel_order{{invoice.pk}}">
-                  <i class="fa-solid fa-ban"></i> Cancel 
-                </button>
+            {% if status == 'pending' %}
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-sm btn-danger rounded-pill" data-bs-toggle="modal"
+              data-bs-target="#cancel_order{{invoice.pk}}">
+              <i class="fa-solid fa-ban"></i> Cancel
+            </button>
 
-                <!-- Modal -->
-                <div class="modal fade" id="cancel_order{{invoice.pk}}" tabindex="-1" aria-labelledby="CancelOrder_{{invoice.pk}}" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="modal_{{invoice.pk}}">Confirm Cancel</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        Are you sure you want to cancel the order of <strong>{{invoice.quantity}} x {{invoice.item}}</strong>?
-                      </div>
-                      <div class="modal-footer">
-                        <a class='btn btn-warning' href="{% url 'member:cancel_order' invoice.pk %}">
-                          Confirm
-                        </a>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                      </div>
-                    </div>
+            <!-- Modal -->
+            <div class="modal fade" id="cancel_order{{invoice.pk}}" tabindex="-1"
+              aria-labelledby="CancelOrder_{{invoice.pk}}" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modal_{{invoice.pk}}">Confirm Cancel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to cancel the order of <strong>{{invoice.quantity}} x {{invoice.item}}</strong>?
+                  </div>
+                  <div class="modal-footer">
+                    <a class='btn btn-warning' href="{% url 'member:cancel_order' invoice.pk %}">
+                      Confirm
+                    </a>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
                   </div>
                 </div>
-              {% else %}
-                {{ status | title }} by <strong>{{ invoice.employee.user.username }}</strong> at {{ invoice.action_timestamp }}
-              {% endif %}
+              </div>
+            </div>
+            {% else %}
+              {{ status | title }} by <strong>{{ invoice.employee.user.username }}</strong> at {{ invoice.action_timestamp }}
+            {% endif %}
           </td>
         </tr>
         {% endwith %}
         {% endfor %}
       </tbody>
     </table>
-<div>
-{% endblock %}
+  </div>
+</div>
+
+<script>
+  const ctx = document.getElementById('myChart').getContext('2d');
+  const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+  {% endblock %}
