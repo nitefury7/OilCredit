@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'home.apps.HomeConfig',
-    'member.apps.MemberConfig',
+    'customer.apps.CustomerConfig',
     'employee.apps.EmployeeConfig',
     'administrator.apps.AdministratorConfig',
 

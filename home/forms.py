@@ -3,7 +3,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
 from home.models import Gender
-from member.models import MemberProfile, MemberType
+from customer.models import CustomerProfile, CustomerType
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 from django.contrib.auth.password_validation import (
@@ -20,8 +20,8 @@ class SignUpForm(forms.Form):
     ), validators=(x.validate for x in validators), help_text=password_validators_help_text_html(validators))
     confirm_password = forms.CharField(widget=forms.PasswordInput())
     email = forms.EmailField(required=False)
-    member_type = forms.ModelChoiceField(
-        queryset=MemberType.objects.all(), required=False)
+    customer_type = forms.ModelChoiceField(
+        queryset=CustomerType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
     gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)
@@ -41,7 +41,7 @@ class SignUpForm(forms.Form):
                     'password',
                     'confirm_password',
                     'email',
-                    'member_type',
+                    'customer_type',
                     css_class='col-md-6',
                 ),
                 Div(
@@ -81,9 +81,9 @@ class SignUpForm(forms.Form):
             last_name=data['last_name'],
         )
         user.set_password(data['password'])
-        member_profile = MemberProfile(
+        customer_profile = CustomerProfile(
             user=user,
-            member_type=data['member_type'],
+            customer_type=data['customer_type'],
             gender=data['gender'],
             city=data['city'],
             state=data['state'],
@@ -93,5 +93,5 @@ class SignUpForm(forms.Form):
         if commit:
             with transaction.atomic():
                 user.save()
-                member_profile.save()
-        return user, member_profile
+                customer_profile.save()
+        return user, customer_profile

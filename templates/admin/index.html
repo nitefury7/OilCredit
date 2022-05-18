@@ -20,13 +20,13 @@
   }
 
   $(document).ready(async () => {
-      const ctx = document.getElementById('recent_members').getContext('2d');
-      let response = await fetch("{% url 'admin:recent_members' %}");
+      const ctx = document.getElementById('recent_customers').getContext('2d');
+      let response = await fetch("{% url 'admin:recent_customers' %}");
       let json = await response.json();
       const data = {
         labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
         datasets: [{
-          label: 'Recent Members',
+          label: 'Recent Customers',
           data: json,
           backgroundColor: Object.keys(json).map((x) => getRandomColor('50')),
           borderColor: ['#B000A0'],
@@ -137,8 +137,8 @@
         {{ total_sales }}
       </div>
       <div>
-        <div>Members</div>
-        {{ member_count }}
+        <div>Customers</div>
+        {{ customer_count }}
       </div>
       <div>
         <div>Employees</div>
@@ -151,7 +151,7 @@
   <div class='stats-charts'>
     <canvas id="sales_by_item" width="500" height="500"></canvas>
     <canvas id="recent_sales" width="500" height="500"></canvas>
-    <canvas id="recent_members" width="500" height="500"></canvas>
+    <canvas id="recent_customers" width="500" height="500"></canvas>
   </div>
 </div>
  

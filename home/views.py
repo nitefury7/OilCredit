@@ -18,16 +18,17 @@ class Home(TemplateView):
 class Login(FormView):
     template_name = 'home/login.html'
     form_class = AuthenticationForm
-    
+
     def form_valid(self, form):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
         if user:
             auth_login(self.request, user)
-            return redirect("home:home")
         else:
             messages.error(self.request, "Invalid username or password.")
+        return redirect("home:home")
+
 
 def logout(request):
     auth_logout(request)
@@ -38,8 +39,8 @@ def logout(request):
 class SignUp(FormView):
     template_name = 'home/signup.html'
     form_class = SignUpForm
-    
+
     def form_valid(self, form):
         user, _ = form.save()
         auth_login(self.request, user)
-        return redirect('member:orders')
+        return redirect('customer:orders')

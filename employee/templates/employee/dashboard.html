@@ -3,7 +3,7 @@
 
 {% block main %}
 <div class='container-fluid py-5'>
-    <h1>Pending Invoices</h1>
+    <h1>All Invoices</h1>
     {% if messages %}
     {% for message in messages %}
       {{ message | bootstrap_message }}
@@ -12,28 +12,19 @@
     <table class='table table-striped'>
         <thead>
             <tr>
-                <th> Member </th>
+                <th> Customer </th>
                 <th> Item </th>
-                <th> Quantity </th>
+                <th> Volume </th>
                 <th> Date </th>
-                <th> Actions  </th>
             </tr>
         </thead>
         <tbody>
             {% for invoice in invoices %}
             <tr>
-                <td>{{ invoice.member }}</td>
+                <td>{{ invoice.customer }}</td>
                 <td>{{ invoice.item }}</td>
-                <td>{{ invoice.quantity }}</td>
+                <td>{{ invoice.volume }}</td>
                 <td>{{ invoice.order_timestamp}}</td>
-                <td>
-                    <a class='mx-2 btn btn-success rounded-circle' href="{% url 'employee:approve_invoice' invoice.pk %}">
-                        <i class="fa-solid fa-circle-check"></i>
-                    </a>
-                    <a class='mx-2 btn btn-danger rounded-circle' href="{% url 'employee:reject_invoice' invoice.pk %}">
-                        <i class="fa-solid fa-ban"></i>
-                    </a>
-                </td>
             </tr>
             {% endfor %}
         </tbody>

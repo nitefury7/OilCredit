@@ -1,4 +1,4 @@
-from member.models import MemberProfile
+from customer.models import CustomerProfile
 from employee.models import EmployeeProfile
 from django.shortcuts import redirect
 from django.http import Http404
@@ -7,8 +7,8 @@ from django.http import Http404
 def redirect_if_auth(fn):
     def inner(request, *args, **kwargs):
         if request.user.is_authenticated:
-            if MemberProfile.objects.filter(user=request.user).exists():
-                return redirect('member:orders')
+            if CustomerProfile.objects.filter(user=request.user).exists():
+                return redirect('customer:orders')
             elif EmployeeProfile.objects.filter(user=request.user).exists():
                 return redirect('employee:dashboard')
             elif request.user.is_superuser:

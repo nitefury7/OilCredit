@@ -2,61 +2,54 @@
 {% load static %}
 
 {% block header %}
-<header class='fixed-top d-flex w-100'>
+<header class="fixed-top d-flex w-100">
   <div class="container-fluid py-1 bg-danger d-flex gap-3 align-items-center">
-    <button type='button' class="btn btn-danger" onclick='toggle_sidebar();'>
+    <button type="button" class="btn btn-danger" onclick="toggle_sidebar();">
       <i class="fa-solid fa-bars"></i>
-    </button> 
+    </button>
     <span class="fs-4 text-white">𝄜 Dashboard</span>
-    <div class='ms-auto'>
+    <div class="ms-auto">
       {% block user_tools %}
-        <a class='btn btn-warning' href="{% url 'home:logout' %}">Logout</a>
+      <a class="btn btn-warning" href="{% url 'home:logout' %}">Logout</a>
       {% endblock %}
     </div>
   </div>
 </header>
-{% endblock %}
+{% endblock %} 
 
 {% block extrastyle %}
-    <link href="{% static 'home/base_dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'home/base_dashboard.css' %}" rel="stylesheet" />
 {% endblock %}
 
 {% block extrascripts %}
-    <script src="{% static 'home/base_dashboard.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script src="{% static 'home/base_dashboard.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
 {% endblock %}
 
-{% block footer %}
-{% endblock %}
+{% block footer %} {% endblock %}
 
 {% block content %}
-<div class="container-fluid" id='content_container'>
-    <div class="row">
-        <div class="col-3 bg-dark text-light" id="sidebar">
-            <div class="sticky-top">
-                {% block sidebar %}
-                  {% block sidebar_user_icon%}
-                    <div class='text-center mt-4'>
-                      <i class="text-center display-1 fa-regular fa-circle-user"></i>
-                    </div>
-                  {% endblock %}
+<div class="container-fluid" id="content_container">
+  <div class="row">
+    <div class="col-3 bg-dark text-light" id="sidebar">
+      <div class="sticky-top">
+        {% block sidebar %}
+        {% block sidebar_top%} {% endblock %}
 
-                  {% block sidbar_user_info %}
-                  {% endblock %}
+        {% block sidbar_nav_header %}
+        <h3 class="mt-5 p-1 px-4 text-danger">
+          <i class="fa-solid fa-compass"></i>
+          Navigation
+        </h3>
+        {% endblock %}
 
-                  {% block sidbar_nav_header %}
-                    <h3 class='mt-5 p-1 px-4'> Navigation </h3>
-                  {% endblock %}
-
-                  {% block sidebar_nav %}
-                  {% endblock %}
-                {% endblock %}
-            </div>
-        </div>
-        <div class="col py-5" id="main">
-            {% block main %}
-            {% endblock %}
-        </div>
+        {% block sidebar_nav %} {% endblock %}
+        {% endblock %}
+      </div>
     </div>
+    <div class="col py-5" id="main">
+      {% block main %} {% endblock %}
+    </div>
+  </div>
 </div>
 {% endblock %}

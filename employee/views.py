@@ -1,6 +1,3 @@
-from datetime import datetime
-
-from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView, FormView
@@ -8,9 +5,9 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 
 from home.utils import ensure_auth, get_profile
-from member.models import Invoice
+from customer.models import Invoice
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, EmployeeOrderForm, SetCredit
+from employee.forms import EmployeeProfileForm, EmployeeOrderForm
 
 
 @method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
@@ -21,43 +18,12 @@ class Dashboard(ListView):
 
     def get_queryset(self, *args, **kwargs):
         queryset = super().get_queryset(*args, **kwargs)
+        employee = get_profile(EmployeeProfile, self.request.user)
         return (
             queryset
-            .filter(status=Invoice.Status.PENDING)
+            .filter(employee=employee)
             .order_by('-order_timestamp')
         )
-
-
-@ensure_auth(EmployeeProfile)
-def approve_invoice(request, id):
-    if Invoice.objects.filter(pk=id).exists():
-        invoice = Invoice.objects.get(pk=id)
-        invoice.employee = get_profile(EmployeeProfile, request.user)
-        invoice.action_timestamp = datetime.now()
-        invoice.status = Invoice.Status.APPROVED
-        invoice.save()
-        messages.success(request, 'The invoice has been approved.')
-    else:
-        messages.error(request, 'The invoice does not exist.')
-    return redirect('employee:dashboard')
-
-
-@ensure_auth(EmployeeProfile)
-def reject_invoice(request, id):
-    if Invoice.objects.filter(pk=id).exists():
-        invoice = Invoice.objects.get(pk=id)
-        if invoice.status == Invoice.Status.PENDING:
-            invoice.member.credit += invoice.item.rate * invoice.quantity
-            invoice.employee = get_profile(EmployeeProfile, request.user)
-            invoice.action_timestamp = datetime.now()
-            invoice.status = Invoice.Status.REJECTED
-            with transaction.atomic():
-                invoice.member.save()
-                invoice.save()
-            messages.success(request, 'The invoice has been rejected.')
-    else:
-        messages.error(request, 'Invalid invoice')
-    return redirect('employee:dashboard')
 
 
 @method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
@@ -78,16 +44,6 @@ class PlaceOrder(FormView):
             "The order has been placed successfully."
         )
         return redirect('employee:place_order')
-
-@method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
-class SetCredit(FormView):
-    template_name = 'employee/set_credit.html'
-    form_class = SetCredit
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Successfully changed credit of user.')
-        return redirect('employee:set_credit')
 
 
 @ensure_auth(EmployeeProfile)

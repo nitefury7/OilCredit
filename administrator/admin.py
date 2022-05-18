@@ -8,7 +8,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
 from employee.models import EmployeeProfile
-from member.models import MemberProfile, Invoice, Item
+from customer.models import CustomerProfile, Invoice, Item
 
 
 class EmployeeProfileInline(admin.StackedInline):
@@ -16,13 +16,13 @@ class EmployeeProfileInline(admin.StackedInline):
     extra = 0
 
 
-class MemberProfileInline(admin.StackedInline):
-    model = MemberProfile
+class CustomerProfileInline(admin.StackedInline):
+    model = CustomerProfile
     extra = 0
 
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (EmployeeProfileInline, MemberProfileInline)
+    inlines = (EmployeeProfileInline, CustomerProfileInline)
     list_display = ("username", "email", "first_name",
                     "last_name", "user_type")
     list_filter = ("is_superuser", "is_active")
@@ -30,8 +30,8 @@ class UserAdmin(BaseUserAdmin):
     def user_type(self, user):
         if user.is_superuser:
             return 'Admin'
-        elif MemberProfile.objects.filter(user=user).exists():
-            return 'Member'
+        elif CustomerProfile.objects.filter(user=user).exists():
+            return 'Customer'
         elif EmployeeProfile.objects.filter(user=user).exists():
             return 'Employee'
         return 'None'
@@ -47,9 +47,9 @@ class CustomAdminSite(admin.AdminSite):
             extra_context = {}
 
         extra_context = {
-            'member_count': MemberProfile.objects.count,
+            'customer_count': CustomerProfile.objects.count,
             'employee_count': EmployeeProfile.objects.count,
-            'total_sales': sum(invoice.cost() for invoice in Invoice.objects.filter(status=Invoice.Status.APPROVED)),
+            'total_sales': sum(invoice.cost() for invoice in Invoice.objects.all()),
             'items': Item.objects.count,
         }
         return super().index(request, extra_context)
@@ -61,39 +61,38 @@ class CustomAdminSite(admin.AdminSite):
                 self.sales_by_item), name='sales_by_item'),
             path('recent_sales', self.admin_view(
                 self.recent_sales), name='recent_sales'),
-            path('recent_members', self.admin_view(
-                self.recent_members), name='recent_members'),
+            path('recent_customers', self.admin_view(
+                self.recent_customers), name='recent_customers'),
         ] + urls
 
-    def recent_members(self, _):
+    def recent_customers(self, _):
         today = datetime.today()
-        new_members = []
+        new_customers = []
         prev_date = datetime.now()
         for i in range(10):
             date = today - timedelta(days=i)
-            members = MemberProfile.objects.filter(
+            customers = CustomerProfile.objects.filter(
                 user__date_joined__gte=date,
                 user__date_joined__lte=prev_date
             )
-            new_members.append(len(members))
+            new_customers.append(len(customers))
             prev_date = date
 
         return HttpResponse(
-            json.dumps(list(reversed(new_members))),
+            json.dumps(list(reversed(new_customers))),
             content_type='application/json'
         )
 
     def recent_sales(self, _):
         today = datetime.today()
-        approved_invoices = Invoice.objects.filter(
-            status=Invoice.Status.APPROVED)
+        invoices_all = Invoice.objects.all()
         sales = []
         prev_date = datetime.now()
         for i in range(10):
             date = today - timedelta(days=i)
-            invoices = approved_invoices.filter(
-                action_timestamp__gte=date,
-                action_timestamp__lte=prev_date
+            invoices = invoices_all.filter(
+                order_timestamp__gte=date,
+                order_timestamp__lte=prev_date
             )
             sales.append(sum(invoice.cost() for invoice in invoices))
             prev_date = date
@@ -104,8 +103,7 @@ class CustomAdminSite(admin.AdminSite):
         items = Item.objects.all()
         sales_dict = {}
         for item in items:
-            invoices = Invoice.objects.filter(
-                item=item, status=Invoice.Status.APPROVED)
+            invoices = Invoice.objects.filter(item=item)
             sales = sum(invoice.cost() for invoice in invoices)
             sales_dict[str(item)] = sales
         return HttpResponse(json.dumps(sales_dict), content_type='application/json')

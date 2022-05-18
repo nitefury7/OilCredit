@@ -2,59 +2,33 @@ from datetime import datetime
 
 from django import forms
 from django.db import transaction
-from django.core.validators import MinValueValidator
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 
 from employee.models import EmployeeProfile, EmployeeType
 from home.models import Gender
-from member.models import Invoice, MemberProfile
+from customer.models import Invoice
 
 
 class EmployeeOrderForm(forms.ModelForm):
     class Meta:
         model = Invoice
-        fields = ['member', 'item', 'quantity']
+        fields = ['customer', 'item', 'volume']
 
     def __init__(self, employee, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.employee = employee
 
-    def clean(self):
-        cleaned_data = super().clean()
-        member = cleaned_data['member']
-        cost = cleaned_data['item'].rate * cleaned_data['quantity']
-        if (member.credit < cost):
-            self.add_error(
-                'quantity',
-                f'{member.user.username} do not have sufficient credits.'
-            )
-        member.credit -= cost
-
     def save(self, commit=True):
         invoice = super().save(commit=False)
-        invoice.action_timestamp = invoice.order_timestamp = datetime.now()
-        invoice.status = Invoice.Status.APPROVED
+        invoice.order_timestamp = datetime.now()
         invoice.employee = self.employee
+        invoice.rate = invoice.item.rate
         if commit:
-            invoice.member.save()
+            invoice.customer.save()
             invoice.save()
-        return (invoice, invoice.member)
-
-
-class SetCredit(forms.Form):
-    member = forms.ModelChoiceField(
-        queryset=MemberProfile.objects.select_related('user').all()
-    )
-    credit = forms.FloatField(validators=(MinValueValidator(0), ))
-
-    def save(self, commit=True):
-        member = self.cleaned_data['member']
-        member.credit = self.cleaned_data['credit']
-        if commit:
-            member.save()
-        return member
+        return (invoice, invoice.customer)
 
 
 class EmployeeProfileForm(forms.Form):

@@ -2,31 +2,69 @@
 {% load crispy_forms_tags %}
 {% load bootstrap_message %}
 
-{% block content %}
-<div class="container-fluid my-3" style="min-height: 90vh;">
-<div class="row d-flex justify-content-center align-items-center h-100">
-  <div class="col-md-6">
-    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-      class="img-fluid" alt="Sample image">
-  </div>
-  <div class="col-md-4 offset-x-2">
-    {% if messages %}
-      {% for message in messages %}
-      {{ message | bootstrap_message }}
-      {% endfor %}
-    {% endif %}
-    <form method='POST'>
-      {% csrf_token %}
-      {{form | crispy}}
-      <div class="text-center text-lg-start mt-4 pt-2">
-        <button type="submit" class="btn btn-warning btn-lg"
-          style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-        <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? {{a}}<a href="{% url 'home:signup' %}"
-            class="link-danger">Register</a></p>
-      </div>
 
-    </form>
+{% block extrastyle %}
+{{ block.super }}
+<style>
+
+.login-form {
+  max-width: 100%;
+  background-color: #fff7d3;
+  box-shadow: 5px 5px 10px #3e3e3e;
+}
+
+.login-form img {
+  object-fit: cover;
+}
+
+.login-container {
+  min-height: 50vh;
+  background-color: #545454;
+}
+
+@media screen and (min-width: 900px) {
+  .login-form {
+    max-width: 60rem;
+  }
+
+  .login-container {
+    min-height: 90vh;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class='login-container d-flex align-items-center'>
+  <div class="login-form container mx-auto border border-primary">
+  <div class="row">
+    <div class="col-md-6 bg-danger d-flex align-items-center justify-content-center">
+      <img 
+        src="https://www.freeiconspng.com/uploads/notepad-icon-8.png"
+        class="img-fluid"
+         alt="Sample image">
+    </div>
+    <div class="col-md-4 py-5 my-3 d-flex align-items-center justify-content-center">
+      {% if messages %}
+        {% for message in messages %}
+        {{ message | bootstrap_message }}
+        {% endfor %}
+      {% endif %}
+      <form method='POST'>
+        <h1 class='display-1'>Login</h1>
+        {% csrf_token %}
+        {{form | crispy}}
+        <div class="text-center text-lg-start mt-4 pt-2">
+          <button type="submit" class="btn btn-warning btn-lg"
+            style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+          <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? {{a}}<a href="{% url 'home:signup' %}"
+              class="link-danger">Register</a></p>
+        </div>
+
+      </form>
+    </div>
   </div>
+  </section>
 </div>
-</section>
 {% endblock %}
