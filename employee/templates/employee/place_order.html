@@ -12,7 +12,7 @@
     {% endif %}
     <form method='post'>
         {% csrf_token %}
-        {{ form | crispy }}
+        {{ formset | crispy }}
         <input value='Submit' name='submit' type='submit' class='btn btn-warning'/>
     </form>
 <div>

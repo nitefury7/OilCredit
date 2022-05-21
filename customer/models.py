@@ -46,18 +46,28 @@ class CustomerProfile(models.Model):
 
 class Invoice(models.Model):
     customer = models.ForeignKey(CustomerProfile, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    volume = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    rate = models.FloatField(validators=(MinValueValidator(0), ))
     order_timestamp = models.DateTimeField()
-
     employee = models.ForeignKey(
         EmployeeProfile,
         on_delete=models.CASCADE, blank=True, null=True,
     )
 
     def cost(self):
-        return self.rate * self.volume
+        purchases = Purchase.objects.filter(invoice=self)
+        return sum(purchase.cost() for purchase in purchases)
 
     def __str__(self):
-        return f"{self.customer.user.username} - {self.volume} {self.item.name}"
+        return f"{self.customer.user.username} - {self.employee.user.username}"
+
+
+class Purchase(models.Model):
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    volume = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    rate = models.FloatField(validators=(MinValueValidator(0), ))
+
+    def cost(self):
+        return self.volume * self.rate
+
+    def __str__(self):
+        return f"{self.volume} {self.item.name} at {self.rate}"

@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
-from django.views.generic import TemplateView
+from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 
@@ -13,16 +13,15 @@ from home.utils import ensure_auth, get_profile
 
 
 @method_decorator(ensure_auth(CustomerProfile), name='dispatch')
-class Orders(TemplateView):
+class Orders(ListView):
+    model = Invoice
+    context_object_name = 'invoices'
     template_name = 'customer/orders.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_queryset(self):
+        qs = super().get_queryset()
         customer = get_profile(CustomerProfile, self.request.user)
-        context['invoices'] = Invoice.objects \
-            .filter(customer=customer) \
-            .order_by('-order_timestamp')
-        return context
+        return qs.filter(customer=customer).order_by('-order_timestamp')
 
 
 @ensure_auth(CustomerProfile)

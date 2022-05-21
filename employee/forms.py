@@ -2,33 +2,44 @@ from datetime import datetime
 
 from django import forms
 from django.db import transaction
+from django.forms import formset_factory
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 
 from employee.models import EmployeeProfile, EmployeeType
 from home.models import Gender
-from customer.models import Invoice
+from customer.models import Purchase
 
 
-class EmployeeOrderForm(forms.ModelForm):
+class PurchaseForm(forms.ModelForm):
     class Meta:
-        model = Invoice
-        fields = ['customer', 'item', 'volume']
+        model = Purchase
+        fields = ('item', 'volume')
 
-    def __init__(self, employee, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.employee = employee
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Div(
+                Div(
+                    'item',
+                    css_class='col-6',
+                ),
+                Div(
+                    'volume',
+                    css_class='col-6',
+                ),
+                css_class='row',
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit',
+                       css_class='btn btn-warning my-2')
+            ),
+        )
 
-    def save(self, commit=True):
-        invoice = super().save(commit=False)
-        invoice.order_timestamp = datetime.now()
-        invoice.employee = self.employee
-        invoice.rate = invoice.item.rate
-        if commit:
-            invoice.customer.save()
-            invoice.save()
-        return (invoice, invoice.customer)
+
+PurchaseFormSet = formset_factory(PurchaseForm, extra=3)
 
 
 class EmployeeProfileForm(forms.Form):

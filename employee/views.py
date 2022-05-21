@@ -1,3 +1,4 @@
+from employee.forms import PurchaseFormSet
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView, FormView
@@ -7,7 +8,7 @@ from django.shortcuts import render, redirect
 from home.utils import ensure_auth, get_profile
 from customer.models import Invoice
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm, EmployeeOrderForm
+from employee.forms import EmployeeProfileForm
 
 
 @method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
@@ -26,24 +27,9 @@ class Dashboard(ListView):
         )
 
 
-@method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
-class PlaceOrder(FormView):
-    template_name = 'employee/place_order.html'
-    form_class = EmployeeOrderForm
-
-    def get_form_kwargs(self):
-        employee = get_profile(EmployeeProfile, self.request.user)
-        kwargs = super().get_form_kwargs()
-        kwargs['employee'] = employee
-        return kwargs
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(
-            self.request,
-            "The order has been placed successfully."
-        )
-        return redirect('employee:place_order')
+def place_order(request):
+    formset = PurchaseFormSet()
+    return render(request, 'employee/place_order.html', {'formset': formset})
 
 
 @ensure_auth(EmployeeProfile)

@@ -12,18 +12,16 @@
     <table class='table table-striped'>
         <thead>
             <tr>
+                <th> Invoice ID </th>
                 <th> Customer </th>
-                <th> Item </th>
-                <th> Volume </th>
                 <th> Date </th>
             </tr>
         </thead>
         <tbody>
             {% for invoice in invoices %}
             <tr>
+                <td>{{ invoice.id }}</td>
                 <td>{{ invoice.customer }}</td>
-                <td>{{ invoice.item }}</td>
-                <td>{{ invoice.volume }}</td>
                 <td>{{ invoice.order_timestamp}}</td>
             </tr>
             {% endfor %}
