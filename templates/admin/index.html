@@ -4,6 +4,29 @@
 {% block extrastyle %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
+<style>
+  .export a {
+    margin: 8px 10px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 15px;
+    background-color: green;
+    color: #fff;
+    text-decoration: none;
+  }
+  .export a:hover, a:focus {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+  .export a:active {
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .export > div {
+    margin: 20px 5px;
+
+  }
+</style>
 {% endblock %}
 
 {% block extrahead %}
@@ -120,10 +143,6 @@
 
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 
-{% block breadcrumbs %}{% endblock %}
-
-{% block nav-sidebar %}{% endblock %}
-
 {% block content %}
 <div id="content-main">
   <div class='stats-main'>
@@ -153,9 +172,19 @@
     <canvas id="recent_sales" width="500" height="500"></canvas>
     <canvas id="recent_customers" width="500" height="500"></canvas>
   </div>
+  <div class='export'>
+    <h1>Export</h1>
+    <h2> Invoices </h2>
+    <div>
+      <a href="{% url 'admin:export_all_invoices' %}"> All Invoices</a>
+      <a href="{% url 'admin:export_daily_invoices' %}">Daily Invoices</a>
+    </div>
+    <h2>Customer/Employee</h2>
+    <div>
+      <a href="#">Customer Information</a>
+      <a href="#">Employee Information</a>
+    </div>
+  </div>
 </div>
- 
 {% endblock %}
 
-{% block sidebar %}
-{% endblock %}

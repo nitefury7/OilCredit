@@ -1,4 +1,6 @@
 import json
+import csv
+from collections import OrderedDict
 from datetime import datetime, timedelta
 
 from django.urls import path
@@ -8,7 +10,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
 
 from employee.models import EmployeeProfile
-from customer.models import CustomerProfile, Invoice, Item
+from customer.models import CustomerProfile, Invoice, Item, Purchase
 
 
 class EmployeeProfileInline(admin.StackedInline):
@@ -23,8 +25,8 @@ class CustomerProfileInline(admin.StackedInline):
 
 class UserAdmin(BaseUserAdmin):
     inlines = (EmployeeProfileInline, CustomerProfileInline)
-    list_display = ("username", "email", "first_name",
-                    "last_name", "user_type")
+    list_display = ("username", "user_type", "first_name",
+                    "last_name", "email")
     list_filter = ("is_superuser", "is_active")
 
     def user_type(self, user):
@@ -63,6 +65,10 @@ class CustomAdminSite(admin.AdminSite):
                 self.recent_sales), name='recent_sales'),
             path('recent_customers', self.admin_view(
                 self.recent_customers), name='recent_customers'),
+            path('export_all_invoices', self.admin_view(
+                self.export_all_invoices), name='export_all_invoices'),
+            path('export_daily_invoices', self.admin_view(
+                self.export_daily_invoices), name='export_daily_invoices'),
         ] + urls
 
     def recent_customers(self, _):
@@ -103,10 +109,61 @@ class CustomAdminSite(admin.AdminSite):
         items = Item.objects.all()
         sales_dict = {}
         for item in items:
-            invoices = Invoice.objects.filter(item=item)
-            sales = sum(invoice.cost() for invoice in invoices)
+            purchases = Purchase.objects.filter(item=item)
+            sales = sum(purchase.cost() for purchase in purchases)
             sales_dict[str(item)] = sales
         return HttpResponse(json.dumps(sales_dict), content_type='application/json')
+
+    def export_all_customers(self, _):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=All_Members.csv'
+        writer = csv.writer(response)
+        ...
+        return response
+
+    def export_all_invoices(self, _):
+        return self.export_invoices(Invoice.objects.all())
+
+    def export_daily_invoices(self, _):
+        last_date = datetime.now() - timedelta(days=1)
+        return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=last_date))
+
+    def export_invoices(self, qs):
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=All_Invoices.csv'
+        writer = csv.writer(response)
+
+        header = ['Date', 'ACC. No.', 'Name', 'INV. No.']
+        items = OrderedDict()
+        for item in Item.objects.all():
+            items[item.pk] = item.name
+
+        for item in [(f"Volume {item_name}", f"Price {item_name}")
+                     for item_name in items.values()]:
+            header.extend(item)
+        header.append('Total')
+        writer.writerow(header)
+
+        for invoice in qs:
+            details = []
+            details.extend([
+                invoice.order_timestamp,
+                invoice.customer.pk,
+                invoice.customer.user.username,
+                invoice.id,
+            ])
+            purchases = Purchase.objects.filter(invoice=invoice.pk)
+            purchases_dict = {}
+            for purchase in purchases:
+                purchases_dict[purchase.item.pk] = (
+                    purchase.volume, purchase.rate)
+            for item_id in items:
+                details.extend(purchases_dict.get(item_id, (0, 0)))
+            details.append(invoice.cost())
+            writer.writerow(details)
+
+        return response
 
 
 admin_site = CustomAdminSite()
