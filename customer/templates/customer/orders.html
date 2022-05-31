@@ -1,6 +1,7 @@
 {% extends 'customer/base.html' %}
 {% load crispy_forms_tags %}
 {% load bootstrap_message %}
+{% load get_purchases %}
 
 {% block main %}
 <div class='container py-2'>
@@ -11,25 +12,57 @@
 
   <h1 class='mt-4'>Order  History </h1>
   <div class="table-responsive">
-    <table class="table table-striped table-hover align-middle">
-      <thead>
-        <tr>
-          <th>Invoice ID</th>
-          <th>Order Date</th>
-          <th>Approved by</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for invoice in invoices %}
-        <tr>
-          <td>{{ invoice.pk }}</td>
-          <td>{{ invoice.order_timestamp}}</td>
-          <td>
-              <strong>{{ invoice.employee.user.username }}</strong> 
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
+    <table class='table table-striped'>
+        <thead>
+            <tr>
+                <th> INV ID </th>
+                <th> Details </th>
+                <th> Date </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for invoice in invoices %}
+            <tr>
+                <td>{{ invoice.id }}</td>
+                <td>
+                    <div class="accordion" id="details-{{invoice.id}}">
+                        <div class="accordion-item">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#details-body-{{invoice.id}}" aria-expanded="true" aria-controls="details-body-{{invoice.id}}">
+                                Total: {{invoice.cost}}
+                            </button>
+                            <div id="details-body-{{invoice.id}}" class="accordion-collapse collapse">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <td>Item</td>
+                                            <td>Volume</td>
+                                            <td>Rate</td>
+                                            <td>Cost</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for purchase in invoice|get_purchases %}
+                                    <tr>
+                                        <td> {{ purchase.item }} </td>
+                                        <td> {{ purchase.volume }} </td>
+                                        <td> {{ purchase.rate }} </td>
+                                        <td> {{ purchase.cost }} </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class='total-row fw-bold'>
+                                        <td colspan='3' class='text-end'> Total </td>
+                                        <td> {{ invoice.cost }} </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ invoice.order_timestamp}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
   </div>
 </div>
