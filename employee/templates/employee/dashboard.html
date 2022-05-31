@@ -1,9 +1,12 @@
 {% extends 'employee/base.html' %}
 {% load bootstrap_message %}
+{% load get_purchases %}
+
+
 
 {% block main %}
 <div class='container-fluid py-5'>
-    <h1>All Invoices</h1>
+    <h1>Invoice History</h1>
     {% if messages %}
     {% for message in messages %}
       {{ message | bootstrap_message }}
@@ -12,8 +15,10 @@
     <table class='table table-striped'>
         <thead>
             <tr>
-                <th> Invoice ID </th>
+                <th> INV ID </th>
                 <th> Customer </th>
+                <th> ACC. No </th>
+                <th> Details </th>
                 <th> Date </th>
             </tr>
         </thead>
@@ -22,6 +27,42 @@
             <tr>
                 <td>{{ invoice.id }}</td>
                 <td>{{ invoice.customer }}</td>
+                <td>{{ invoice.customer.pk }}</td>
+                <td>
+                    <div class="accordion" id="details-{{invoice.id}}">
+                        <div class="accordion-item">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#details-body-{{invoice.id}}" aria-expanded="true" aria-controls="details-body-{{invoice.id}}">
+                                Total: {{invoice.cost}}
+                            </button>
+                            <div id="details-body-{{invoice.id}}" class="accordion-collapse collapse">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <td>Item</td>
+                                            <td>Volume</td>
+                                            <td>Rate</td>
+                                            <td>Cost</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for purchase in invoice|get_purchases %}
+                                    <tr>
+                                        <td> {{ purchase.item }} </td>
+                                        <td> {{ purchase.volume }} </td>
+                                        <td> {{ purchase.rate }} </td>
+                                        <td> {{ purchase.cost }} </td>
+                                    </tr>
+                                    {% endfor %}
+                                    <tr class='total-row fw-bold'>
+                                        <td colspan='3' class='text-end'> Total </td>
+                                        <td> {{ invoice.cost }} </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </td>
                 <td>{{ invoice.order_timestamp}}</td>
             </tr>
             {% endfor %}
