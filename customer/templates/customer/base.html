@@ -6,16 +6,6 @@
     <link href="{% static 'customer/base.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block sidebar_top %}
-<div class="fs-1 container text-center pt-3 bg-secondary">
-  <img src="https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"
-    alt="User Avatar"
-    class="img-fluid w-75"
-   >
-  {{ customer.user.username }}
-</div>
-{% endblock %}
-
 {% block sidebar_nav %}
 <div class="ms-4 mt-4 d-flex flex-column gap-3">
   <a href="{% url 'customer:orders' %}" class="text-decoration-none text-white">

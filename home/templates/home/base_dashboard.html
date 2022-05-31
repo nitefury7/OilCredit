@@ -34,9 +34,11 @@
     <div class="col-3 bg-dark text-light" id="sidebar">
       <div class="sticky-top">
         {% block sidebar %}
-        {% block sidebar_top%} {% endblock %}
+        {% block sidebar_top%}
+          <h2 class='p-3 px-5 m-3 ms-0' style='background-color: #533; clip-path: polygon( 0% 0%, calc(100% - 2rem) 0%, 100% 50%, calc(100% - 2rem) 100%, 0% 100%);' > {{ user.get_username }} </h2>
+        {% endblock %}
 
-        {% block sidbar_nav_header %}
+        {% block sidebar_nav_header %}
         <h3 class="mt-5 p-1 px-4 text-danger">
           <i class="fa-solid fa-compass"></i>
           Navigation

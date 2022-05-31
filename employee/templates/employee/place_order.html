@@ -2,18 +2,173 @@
 {% load crispy_forms_tags %}
 {% load bootstrap_message %}
 
+
+{% block extrascripts %}
+{{ block.super }}
+<script>
+  "use strict";
+  let delete_input_group;
+
+  $(document).ready(async () => {
+    // Get customer list
+    let response = await fetch("{% url 'employee:get_customers' %}");
+    let users = await response.json();
+    let user_select_options_html = "";
+    for (let user of users) {
+        user_select_options_html+=`<option value='${user.id}'>${user.username}</option>`
+    }
+    $('#customer_select').html(user_select_options_html);
+
+    // On change customer
+    const onChangeCustomer = async () => {
+      let id = $('#customer_select').val();
+      let response = await fetch(`../get_customer_profile/${id}`);
+      let user_info = await response.json();
+      
+      let html = `
+        <tbody>
+            <tr> <th>Username</th> <td>${user_info.username}</td> </tr>
+            <tr> <th>Account Number</th> <td>${user_info.id}</td> </tr>
+            <tr> <th>First Name</th> <td>${user_info.first_name}</td> </tr>
+            <tr> <th>Last Name</th> <td>${user_info.last_name}</td> </tr>
+            <tr> <th>Contact</th> <td>${user_info.contact}</td> </tr>
+            <tr> <th>Email</th> <td>${user_info.email}</td> </tr>
+        </tbody>
+      `;
+      $('#customer_profile').html(html);
+      $('#customer_profile_card').removeClass('d-none');
+    }
+    $('#customer_select').on('change', onChangeCustomer);
+    onChangeCustomer();
+
+    // Get Items
+    response = await fetch("{% url 'employee:get_items' %}");
+    let items = await response.json();
+    let item_select_options_html = "";
+    for (let item of items) {
+        item_select_options_html +=`<option value='${item.id}'>${item.name}</option>`
+    }
+    $(".order-item-select").html(item_select_options_html);
+
+    const construct_table_rows = () => {
+      let total_cost = 0.0;
+      let receipt_table_html = '';
+      const items_map = new Map();
+      for (let item of items) {
+        items_map.set(item.id, item);
+      }
+      for (let input_group of Array.from($('#orders_list').children())) {
+        let item_id = +input_group.children[0].value;
+        let input_volume = +input_group.children[1].value;
+        let item = items_map.get(item_id);
+        let cost = item.rate * input_volume
+        total_cost += cost;
+        receipt_table_html += `
+        <tr class='fw-bold'>
+          <td>${item.name}</td>
+          <td>${item.rate.toFixed(4)}</td>
+          <td>${input_volume}</td>
+          <td>${cost.toFixed(4)}</td>
+        </tr>`;
+      }
+      receipt_table_html += `
+      <tr class='fw-bold text-danger'>
+        <td colspan="3" class='text-end'>Total</td>
+        <td>${total_cost.toFixed(4)}</td>
+      </tr>`;
+
+      $('#receipt_table').html(receipt_table_html);
+    };
+    construct_table_rows();
+    delete_input_group = (group) => {
+        group.parentNode.remove();
+        construct_table_rows();
+    }
+
+
+    const add_new = () => {
+      let input_group = `
+      <div class="input-group my-2">
+        <select class="order-item-select form-select mx-2" aria-label="Item name">
+         ${item_select_options_html}
+        </select>
+        <input type="number" min='0' class="volume-input form-control mx-2" placeholder="Volume" aria-label="Volume"/>
+        <button onclick='delete_input_group(this)' class='mx-2 btn btn-danger rounded-circle'><i class="fas fa-minus"></i></button>
+      </div>`;
+      $('#orders_list').append(input_group);
+      $('.order-item-select').on('change', () => construct_table_rows());
+      $('.volume-input').on('input', () => construct_table_rows());
+      construct_table_rows();
+    };
+    add_new();
+
+    // On add item
+    $("#add_new").click(add_new);
+
+  });
+
+
+</script>
+
+{% endblock %}
+
 {% block main %}
 <div class='container py-5'>
-    <h1> New Order </h1>
-    {% if messages %}
-    {% for message in messages %}
-      {{ message | bootstrap_message }}
-    {% endfor %}
-    {% endif %}
-    <form method='post'>
-        {% csrf_token %}
-        {{ formset | crispy }}
-        <input value='Submit' name='submit' type='submit' class='btn btn-warning'/>
-    </form>
+  
+    <h1>Customer</h1> 
+    <select id='customer_select' class="form-select mx-2" aria-label="Customer username">
+    </select>
+    
+    <div id='customer_profile_card' class="card m-3 bg-light d-none" style="width: 50ch;">
+      <div class="card-body">
+        <h5 class="card-title">Customer Profile</h5>
+        <p class="card-text">
+          <table id='customer_profile' class='table'>
+          </table>
+        </p>
+      </div>
+    </div>
+    
+
+    <div class="row my-5">
+      <div class="col-md-6">
+        <h1> New Order </h1>
+        {% if messages %}
+        {% for message in messages %}
+          {{ message | bootstrap_message }}
+        {% endfor %}
+        {% endif %}
+          
+        <div id='orders_list'>
+        </div>
+
+        <button id='add_new' class='btn btn-success mt-2 rounded-pill'>
+          <i class="fas fa-plus"></i> &nbsp; Add new
+        </button>
+      </div>
+      <div class="col-md-6">
+        <div class="card m-3 bg-light" style="width: 50ch;">
+          <div class="card-body">
+            <h5 class="card-title">Receipt</h5>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Rate</th>
+                  <th>Volume</th>
+                  <th>Cost</th>
+                </tr>
+              </thead>
+              <tbody id='receipt_table'>
+              </tbody>
+            </table>
+            <button class="btn btn-warning" id="submit_receipt"> Submit </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        {% comment %} {{ formset | crispy }} {% endcomment %}
+        {% comment %} <input value='Submit' name='submit' type='submit' class='btn btn-warning'/> {% endcomment %}
 <div>
 {% endblock %}

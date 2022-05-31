@@ -1,12 +1,13 @@
-from employee.forms import PurchaseFormSet
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 
 from home.utils import ensure_auth, get_profile
-from customer.models import Invoice
+from customer.models import CustomerProfile, Invoice, Item
 from employee.models import EmployeeProfile
 from employee.forms import EmployeeProfileForm
 
@@ -27,9 +28,44 @@ class Dashboard(ListView):
         )
 
 
+@ensure_auth(EmployeeProfile)
+def get_customers(_):
+    customers = []
+    for customer in CustomerProfile.objects.all():
+        customers.append({
+            "id": customer.pk,
+            "username": customer.user.username,
+        })
+    return JsonResponse(customers, safe=False)
+
+
+@ensure_auth(EmployeeProfile)
+def get_customer_profile(request, id):
+    customer = get_object_or_404(CustomerProfile, pk=id)
+    return JsonResponse({
+        "id": customer.id,
+        "username": customer.user.username,
+        "first_name": customer.user.first_name,
+        "last_name": customer.user.last_name,
+        "email": customer.user.email,
+        "contact": customer.contact,
+    })
+
+
+@ensure_auth(EmployeeProfile)
+def get_items(_):
+    items = []
+    for item in Item.objects.all():
+        items.append({
+            "id": item.pk,
+            "rate": item.rate,
+            "name": item.name,
+        })
+    return JsonResponse(items, safe=False)
+
+
 def place_order(request):
-    formset = PurchaseFormSet()
-    return render(request, 'employee/place_order.html', {'formset': formset})
+    return render(request, 'employee/place_order.html')
 
 
 @ensure_auth(EmployeeProfile)

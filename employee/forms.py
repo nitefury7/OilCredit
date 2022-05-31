@@ -17,30 +17,6 @@ class PurchaseForm(forms.ModelForm):
         model = Purchase
         fields = ('item', 'volume')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Div(
-                Div(
-                    'item',
-                    css_class='col-6',
-                ),
-                Div(
-                    'volume',
-                    css_class='col-6',
-                ),
-                css_class='row',
-            ),
-            ButtonHolder(
-                Submit('submit', 'Submit',
-                       css_class='btn btn-warning my-2')
-            ),
-        )
-
-
-PurchaseFormSet = formset_factory(PurchaseForm, extra=3)
-
 
 class EmployeeProfileForm(forms.Form):
     email = forms.EmailField(required=False)
