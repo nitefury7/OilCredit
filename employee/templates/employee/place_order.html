@@ -93,7 +93,7 @@
          ${item_select_options_html}
         </select>
         <input type="number" min='0' class="volume-input form-control mx-2" placeholder="Volume" aria-label="Volume"/>
-        <button onclick='delete_input_group(this)' class='mx-2 btn btn-danger rounded-circle'><i class="fas fa-minus"></i></button>
+        <button onclick='delete_input_group(this)' class='mx-2 btn btn-outline-danger rounded-pill'><i class="fas fa-trash"></i></button>
       </div>`;
       $('#orders_list').append(input_group);
       $('.order-item-select').on('change', () => construct_table_rows());
@@ -104,8 +104,31 @@
 
     // On add item
     $("#add_new").click(add_new);
-
+      
   });
+
+  async function onSubmit() {
+      const purchases = [];
+      for (let input_group of Array.from($('#orders_list').children())) {
+        let item_id = +input_group.children[0].value;
+        let input_volume = +input_group.children[1].value;
+        purchases.push({item: item_id, volume: input_volume});
+      }
+      const form = {
+        customer: +$('#customer_select').val(),
+        purchases: purchases
+      };
+      let response = await fetch("{% url 'employee:place_order' %}", {
+          credentials : 'same-origin',
+          method: "post",
+          headers: { 
+            "Content-Type": "application/json",
+            "X-CSRFToken": '{{ csrf_token }}'
+         },
+          body: JSON.stringify(form),
+      });
+      window.location.replace("{% url 'employee:place_order' %}");
+  }
 
 
 </script>
@@ -162,7 +185,7 @@
               <tbody id='receipt_table'>
               </tbody>
             </table>
-            <button class="btn btn-warning" id="submit_receipt"> Submit </button>
+            <button onclick='onSubmit()' id='submit' class="btn btn-warning" id="submit_receipt"> Submit </button>
           </div>
         </div>
       </div>

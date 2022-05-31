@@ -15,7 +15,7 @@ from customer.models import Purchase
 class PurchaseForm(forms.ModelForm):
     class Meta:
         model = Purchase
-        fields = ('item', 'volume')
+        exclude = ['invoice', ]
 
 
 class EmployeeProfileForm(forms.Form):

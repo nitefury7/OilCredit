@@ -1,5 +1,9 @@
+from datetime import datetime
+import json
+
+from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
@@ -9,7 +13,7 @@ from django.shortcuts import render, redirect
 from home.utils import ensure_auth, get_profile
 from customer.models import CustomerProfile, Invoice, Item
 from employee.models import EmployeeProfile
-from employee.forms import EmployeeProfileForm
+from employee.forms import EmployeeProfileForm, PurchaseForm
 
 
 @method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
@@ -64,7 +68,34 @@ def get_items(_):
     return JsonResponse(items, safe=False)
 
 
+@ensure_auth(EmployeeProfile)
 def place_order(request):
+    if request.method == 'POST':
+        json_form = json.loads(request.body)
+        profile = get_object_or_404(CustomerProfile, pk=json_form['customer'])
+        invoice = Invoice(customer=profile,
+                          order_timestamp=datetime.now(),
+                          employee=get_profile(EmployeeProfile, request.user))
+
+        forms = []
+        for purchase_dict in json_form['purchases']:
+            item = get_object_or_404(Item, pk=purchase_dict['item'])
+            purchase_dict['rate'] = item.rate
+            forms.append(PurchaseForm(purchase_dict))
+
+        if all([form.is_valid() for form in forms]):
+            objects = [form.save(commit=False) for form in forms]
+            with transaction.atomic():
+                invoice.save()
+                for object in objects:
+                    object.invoice = invoice
+                    object.save()
+            messages.success(request, "Your order was placed.")
+            return HttpResponse("")
+        else:
+            messages.error(request, "Invalid submission")
+            return HttpResponse(status=400)
+
     return render(request, 'employee/place_order.html')
 
 
