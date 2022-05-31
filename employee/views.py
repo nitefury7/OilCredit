@@ -17,9 +17,9 @@ from employee.forms import EmployeeProfileForm, PurchaseForm
 
 
 @method_decorator(ensure_auth(EmployeeProfile), name='dispatch')
-class Dashboard(ListView):
+class InvoiceHistory(ListView):
     model = Invoice
-    template_name = 'employee/dashboard.html'
+    template_name = 'employee/invoice_history.html'
     context_object_name = 'invoices'
 
     def get_queryset(self, *args, **kwargs):

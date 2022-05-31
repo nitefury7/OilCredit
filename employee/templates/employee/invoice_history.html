@@ -2,17 +2,23 @@
 {% load bootstrap_message %}
 {% load get_purchases %}
 
+{% block extrascripts %}
+{{ block.super }}
+<script>
+    $(document).ready(() => { $('#invoice_history').DataTable(); });
+</script>
+{% endblock %}
 
 
 {% block main %}
 <div class='container-fluid py-5'>
-    <h1>Invoice History</h1>
+    <h1 class='mb-5'>Invoice History</h1>
     {% if messages %}
     {% for message in messages %}
       {{ message | bootstrap_message }}
     {% endfor %}
     {% endif %}
-    <table class='table table-striped'>
+    <table id='invoice_history' class='table table-striped'>
         <thead>
             <tr>
                 <th> INV ID </th>

@@ -10,7 +10,7 @@ def redirect_if_auth(fn):
             if CustomerProfile.objects.filter(user=request.user).exists():
                 return redirect('customer:orders')
             elif EmployeeProfile.objects.filter(user=request.user).exists():
-                return redirect('employee:dashboard')
+                return redirect('employee:place_order')
             elif request.user.is_superuser:
                 return redirect('admin:index')
         return fn(request, *args, **kwargs)

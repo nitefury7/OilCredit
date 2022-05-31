@@ -22,7 +22,7 @@
     // On change customer
     const onChangeCustomer = async () => {
       let id = $('#customer_select').val();
-      let response = await fetch(`../get_customer_profile/${id}`);
+      let response = await fetch(`get_customer_profile/${id}`);
       let user_info = await response.json();
       
       let html = `
