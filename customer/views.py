@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render, redirect
 
 from customer.forms import CustomerProfileForm
-from customer.models import Item, CustomerProfile, Invoice
+from customer.models import Item, CustomerProfile, Invoice, Purchase
 from home.utils import ensure_auth, get_profile
 
 
@@ -30,8 +30,9 @@ def spendings_by_product(request):
     items = Item.objects.all()
     sales_dict = {}
     for item in items:
-        invoices = Invoice.objects.filter(item=item, customer=customer)
-        sales = sum(invoice.cost() for invoice in invoices)
+        purchases = Purchase.objects.filter(
+            item=item, invoice__customer=customer)
+        sales = sum(purchase.cost() for purchase in purchases)
         sales_dict[str(item)] = sales
     return HttpResponse(json.dumps(sales_dict), content_type='application/json')
 
