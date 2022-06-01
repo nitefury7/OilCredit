@@ -1,8 +1,9 @@
 import csv
 from collections import OrderedDict
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.urls import path
+from django.utils import timezone
 from django.http import HttpResponse, JsonResponse
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -77,33 +78,29 @@ class CustomAdminSite(admin.AdminSite):
         ] + urls
 
     def recent_customers(self, _):
-        today = datetime.today().date()
+        today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         new_customers = []
-        prev_date = datetime.now()
         for i in range(10):
             date = today - timedelta(days=i)
             customers = CustomerProfile.objects.filter(
                 user__date_joined__gte=date,
-                user__date_joined__lte=prev_date
+                user__date_joined__lte=date + timedelta(days=1)
             )
             new_customers.append(len(customers))
-            prev_date = date
 
         return JsonResponse(list(reversed(new_customers)), safe=False)
 
     def recent_sales(self, _):
-        today = datetime.today().date()
+        today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         invoices_all = Invoice.objects.all()
         sales = []
-        prev_date = datetime.now()
         for i in range(10):
             date = today - timedelta(days=i)
             invoices = invoices_all.filter(
                 order_timestamp__gte=date,
-                order_timestamp__lte=prev_date
+                order_timestamp__lte=date + timedelta(days=1)
             )
             sales.append(sum(invoice.cost() for invoice in invoices))
-            prev_date = date
 
         return JsonResponse(list(reversed(sales)), safe=False)
 
@@ -156,8 +153,8 @@ class CustomAdminSite(admin.AdminSite):
         return self.export_invoices(Invoice.objects.all())
 
     def export_daily_invoices(self, _):
-        last_date = datetime.now() - timedelta(days=1)
-        return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=last_date))
+        today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=today))
 
     def export_all_customers(self, _):
         response = HttpResponse(content_type='text/csv')
@@ -206,7 +203,7 @@ class CustomAdminSite(admin.AdminSite):
                            f"Sales of {item_name}", ])
         writer.writerow(header)
 
-        today = datetime.today().date()
+        today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
         for employee in EmployeeProfile.objects.all():
             invoices = Invoice.objects.filter(
                 employee=employee, order_timestamp__gte=today)

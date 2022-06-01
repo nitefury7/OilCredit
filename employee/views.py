@@ -1,4 +1,3 @@
-from datetime import datetime
 import json
 
 from django.db import transaction
@@ -8,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.shortcuts import render, redirect
 
 from home.utils import ensure_auth, get_profile
@@ -74,7 +74,7 @@ def place_order(request):
         json_form = json.loads(request.body)
         profile = get_object_or_404(CustomerProfile, pk=json_form['customer'])
         invoice = Invoice(customer=profile,
-                          order_timestamp=datetime.now(),
+                          order_timestamp=timezone.now(),
                           employee=get_profile(EmployeeProfile, request.user))
 
         forms = []

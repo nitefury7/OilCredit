@@ -1,8 +1,7 @@
-from datetime import datetime
-
 from django import forms
 from django.db import transaction
-from django.forms import formset_factory
+from django.utils import timezone
+
 from phonenumber_field.formfields import PhoneNumberField
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
@@ -86,7 +85,7 @@ class EmployeeProfileForm(forms.Form):
         self.user.first_name = data['first_name']
         self.user.last_name = data['last_name']
 
-        self.employee_profile.employment_date = datetime.now()
+        self.employee_profile.employment_date = timezone.now()
         self.employee_profile.employee_type = data['employee_type']
         self.employee_profile.post = data['post']
         self.employee_profile.gender = data['gender']

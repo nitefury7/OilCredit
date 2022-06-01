@@ -1,10 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from django.shortcuts import render, redirect
 
 from customer.forms import CustomerProfileForm
@@ -39,19 +40,17 @@ def spendings_by_product(request):
 
 @ensure_auth(CustomerProfile)
 def latest_spendings(request):
-    today = datetime.today().date()
+    today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
     invoices_all = Invoice.objects.all()
     spendings = []
-    prev_date = datetime.today()
     for i in range(10):
         date = today - timedelta(days=i)
         invoices = invoices_all.filter(
             customer=get_profile(CustomerProfile, request.user),
             order_timestamp__gte=date,
-            order_timestamp__lte=prev_date
+            order_timestamp__lte=date + timedelta(days=1),
         )
         spendings.append(sum(invoice.cost() for invoice in invoices))
-        prev_date = date
 
     return JsonResponse(list(reversed(spendings)), safe=False)
 
