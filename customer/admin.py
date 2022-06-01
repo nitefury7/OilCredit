@@ -4,7 +4,6 @@ from administrator.admin import admin_site
 
 # Register your models here.
 admin_site.register(Item)
-admin_site.register(CustomerType)
 
 
 class InvoiceAdmin(admin.ModelAdmin):

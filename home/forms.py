@@ -3,7 +3,7 @@ from django.db import transaction
 from django.contrib.auth.models import User
 from phonenumber_field.formfields import PhoneNumberField
 from home.models import Gender
-from customer.models import CustomerProfile, CustomerType
+from customer.models import CustomerProfile
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 from django.contrib.auth.password_validation import (
@@ -20,8 +20,6 @@ class SignUpForm(forms.Form):
     ), validators=(x.validate for x in validators), help_text=password_validators_help_text_html(validators))
     confirm_password = forms.CharField(widget=forms.PasswordInput())
     email = forms.EmailField(required=False)
-    customer_type = forms.ModelChoiceField(
-        queryset=CustomerType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
     gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)

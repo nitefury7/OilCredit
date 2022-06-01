@@ -16,25 +16,9 @@ class Item(models.Model):
         return str(self.name)
 
 
-class CustomerType(models.Model):
-    name = models.CharField(max_length=20)
-    description = models.CharField(max_length=1000)
-    value = models.FloatField()
-
-    def __str__(self):
-        return str(self.name)
-
-
 class CustomerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    customer_type = models.ForeignKey(
-        CustomerType,
-        on_delete=models.CASCADE, blank=True, null=True,
-    )
-
     gender = models.SmallIntegerField(choices=Gender.choices)
-
     city = models.CharField(max_length=20, blank=True)
     state = models.CharField(max_length=20, blank=True)
     zip_code = models.BigIntegerField(blank=True, null=True)

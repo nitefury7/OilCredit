@@ -10,15 +10,14 @@ class EmployeeType(models.IntegerChoices):
 
 class EmployeeProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-
     gender = models.SmallIntegerField(choices=Gender.choices)
-    city = models.CharField(max_length=20)
-    state = models.CharField(max_length=20)
-    zip_code = models.BigIntegerField()
-    contact = PhoneNumberField()
+    city = models.CharField(max_length=20, blank=True)
+    state = models.CharField(max_length=20, blank=True)
+    zip_code = models.BigIntegerField(blank=True, null=True)
+    contact = PhoneNumberField(blank=True)
     employee_type = models.SmallIntegerField(choices=EmployeeType.choices)
     employment_date = models.DateField()
-    post = models.CharField(max_length=20)
+    post = models.CharField(max_length=20, blank=True)
 
     def __str__(self):
         return f"{self.user.username}"

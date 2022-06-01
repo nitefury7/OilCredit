@@ -5,13 +5,11 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder, Submit, Div
 
 from home.models import Gender
-from .models import CustomerProfile, CustomerType
+from .models import CustomerProfile
 
 
 class CustomerProfileForm(forms.Form):
     email = forms.EmailField(required=False)
-    customer_type = forms.ModelChoiceField(
-        queryset=CustomerType.objects.all(), required=False)
     first_name = forms.CharField(max_length=20, required=False)
     last_name = forms.CharField(max_length=20, required=False)
     gender = forms.TypedChoiceField(choices=Gender.choices, coerce=int)
@@ -28,7 +26,6 @@ class CustomerProfileForm(forms.Form):
         self.fields['last_name'].initial = user.last_name
 
         self.customer_profile = CustomerProfile.objects.get(user=self.user)
-        self.fields['customer_type'].initial = self.customer_profile.customer_type
         self.fields['gender'].initial = self.customer_profile.gender
         self.fields['city'].initial = self.customer_profile.city
         self.fields['state'].initial = self.customer_profile.state
@@ -45,7 +42,6 @@ class CustomerProfileForm(forms.Form):
                     'last_name',
                     'gender',
                     'email',
-                    'customer_type',
                     css_class='col-md-6',
                 ),
                 Div(
@@ -69,7 +65,6 @@ class CustomerProfileForm(forms.Form):
         self.user.first_name = data['first_name']
         self.user.last_name = data['last_name']
 
-        self.customer_profile.customer_type = data['customer_type']
         self.customer_profile.gender = data['gender']
         self.customer_profile.city = data['city']
         self.customer_profile.state = data['state']
