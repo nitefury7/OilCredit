@@ -18,6 +18,10 @@
         user_select_options_html+=`<option value='${user.id}'>${user.username}</option>`
     }
     $('#customer_select').html(user_select_options_html);
+    $('#customer_select').select2({
+      theme: 'bootstrap-5',
+      width: "80%",
+    });
 
     // On change customer
     const onChangeCustomer = async () => {
@@ -139,8 +143,10 @@
 <div class='container py-5'>
   
     <h1>Select Customer</h1> 
-    <select id='customer_select' class="form-select mx-2" aria-label="Customer username">
-    </select>
+    <div>
+      <select id='customer_select' class="form-select mx-2" aria-label="Customer username">
+      </select>
+    </div>
     
     <div id='customer_profile_card' class="card m-3 bg-light d-none" style="width: 50ch;">
       <div class="card-body">

@@ -46,13 +46,19 @@ def get_customers(_):
 @ensure_auth(EmployeeProfile)
 def get_customer_profile(request, id):
     customer = get_object_or_404(CustomerProfile, pk=id)
+
+    contact = ""
+    if customer.contact:
+        e164 = customer.contact.as_e164
+        contact = f"{e164[:-10]} {e164[-10:]}"
+
     return JsonResponse({
         "id": customer.id,
         "username": customer.user.username,
         "first_name": customer.user.first_name,
         "last_name": customer.user.last_name,
         "email": customer.user.email,
-        "contact": customer.contact,
+        "contact": contact,
     })
 
 
