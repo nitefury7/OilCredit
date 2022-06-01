@@ -64,7 +64,7 @@
                           </div>
                       </div>
                   </td>
-                  <td>{{ invoice.order_timestamp}}</td>
+                  <td>{{ invoice.order_timestamp | date:"Y-m-d" }}</td>
               </tr>
               {% endfor %}
           </tbody>

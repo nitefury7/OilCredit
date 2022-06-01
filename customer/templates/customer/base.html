@@ -1,11 +1,6 @@
 {% extends 'home/base_dashboard.html' %}
 {% load static %}
 
-{% block extrastyle %}
-{{ block.super }}
-    <link href="{% static 'customer/base.css' %}" rel="stylesheet">
-{% endblock %}
-
 {% block sidebar_nav %}
 <div class="ms-4 mt-4 d-flex flex-column gap-3">
   <a href="{% url 'customer:orders' %}" class="text-decoration-none text-white">
