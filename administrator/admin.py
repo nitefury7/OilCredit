@@ -164,9 +164,14 @@ class CustomAdminSite(admin.AdminSite):
                   'Contact', 'Gender', 'City', 'State', 'Zip Code', )
         writer.writerow(header)
         for customer in CustomerProfile.objects.all():
+            contact = ""
+            if customer.contact:
+                e164 = customer.contact.as_e164
+                contact = f"{e164[:-10]} {e164[-10:]}"
+
             row = (
                 customer.id, customer.user.username, customer.user.first_name, customer.user.last_name,
-                customer.user.email, customer.contact, customer.gender, customer.city,
+                customer.user.email, contact, customer.get_gender_display(), customer.city,
                 customer.state, customer.zip_code,
             )
             writer.writerow(row)
@@ -180,9 +185,13 @@ class CustomAdminSite(admin.AdminSite):
                   'City', 'State', 'Zip Code', 'Employee Type', "Employment Date", "Post")
         writer.writerow(header)
         for employee in EmployeeProfile.objects.all():
+            contact = ""
+            if employee.contact:
+                e164 = employee.contact.as_e164
+                contact = f"{e164[:-10]} {e164[-10:]}"
             row = (
                 employee.id, employee.user.username, employee.user.first_name, employee.user.last_name,
-                employee.user.email, employee.contact, employee.gender, employee.city,
+                employee.user.email, contact, employee.get_gender_display(), employee.city,
                 employee.state, employee.zip_code, employee.employee_type, employee.employment_date, employee.post
             )
             writer.writerow(row)
