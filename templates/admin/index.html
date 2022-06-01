@@ -295,16 +295,15 @@ dashboard
       <div class="export-section">
         <h2><i class="fa-solid fa-user"></i> Customer</h2>
         <div class="badge-button-container">
-          <a href="#">Profile Information</a>
+          <a href="{% url 'admin:export_all_customers' %}">Profile Information</a>
         </div>
       </div>
 
       <div class="export-section">
         <h2><i class="fa-solid fa-user-astronaut"></i> Employee</h2>
         <div class="badge-button-container">
-          <a href="#">Profile Information</a>
-          <a href="#">Daily Report</a>
-          <a href="#">Full Report</a>
+          <a href="{% url 'admin:export_all_employees' %}"> Profile Information</a>
+          <a href="{% url 'admin:export_employee_report' %}">Daily Report</a>
         </div>
       </div>
     </div>

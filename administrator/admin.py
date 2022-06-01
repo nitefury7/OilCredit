@@ -68,10 +68,16 @@ class CustomAdminSite(admin.AdminSite):
                 self.export_all_invoices), name='export_all_invoices'),
             path('export_daily_invoices', self.admin_view(
                 self.export_daily_invoices), name='export_daily_invoices'),
+            path('export_all_customers', self.admin_view(
+                self.export_all_customers), name='export_all_customers'),
+            path('export_all_employees', self.admin_view(
+                self.export_all_employees), name='export_all_employees'),
+            path('export_employee_report', self.admin_view(
+                self.export_employee_report), name='export_employee_report'),
         ] + urls
 
     def recent_customers(self, _):
-        today = datetime.today()
+        today = datetime.today().date()
         new_customers = []
         prev_date = datetime.now()
         for i in range(10):
@@ -86,7 +92,7 @@ class CustomAdminSite(admin.AdminSite):
         return JsonResponse(list(reversed(new_customers)), safe=False)
 
     def recent_sales(self, _):
-        today = datetime.today()
+        today = datetime.today().date()
         invoices_all = Invoice.objects.all()
         sales = []
         prev_date = datetime.now()
@@ -110,24 +116,10 @@ class CustomAdminSite(admin.AdminSite):
             sales_dict[str(item)] = sales
         return JsonResponse(sales_dict)
 
-    def export_all_customers(self, _):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=All_Members.csv'
-        writer = csv.writer(response)
-        ...
-        return response
-
-    def export_all_invoices(self, _):
-        return self.export_invoices(Invoice.objects.all())
-
-    def export_daily_invoices(self, _):
-        last_date = datetime.now() - timedelta(days=1)
-        return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=last_date))
-
     def export_invoices(self, qs):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=All_Invoices.csv'
-        writer = csv.writer(response)
+        writer = csv.writer(response, dialect='excel')
 
         header = ['Date', 'ACC. No.', 'Name', 'INV. No.']
         items = OrderedDict()
@@ -152,12 +144,93 @@ class CustomAdminSite(admin.AdminSite):
             purchases_dict = {}
             for purchase in purchases:
                 purchases_dict[purchase.item.pk] = (
-                    purchase.volume, purchase.rate)
+                    purchase.volume, purchase.cost())
             for item_id in items:
                 details.extend(purchases_dict.get(item_id, (0, 0)))
             details.append(invoice.cost())
             writer.writerow(details)
 
+        return response
+
+    def export_all_invoices(self, _):
+        return self.export_invoices(Invoice.objects.all())
+
+    def export_daily_invoices(self, _):
+        last_date = datetime.now() - timedelta(days=1)
+        return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=last_date))
+
+    def export_all_customers(self, _):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=All_Customers.csv'
+        writer = csv.writer(response, dialect='excel')
+        header = ('ID', 'Username', 'First Name', 'Last Name', 'Email',
+                  'Contact', 'Gender', 'City', 'State', 'Zip Code', )
+        writer.writerow(header)
+        for customer in CustomerProfile.objects.all():
+            row = (
+                customer.id, customer.user.username, customer.user.first_name, customer.user.last_name,
+                customer.user.email, customer.contact, customer.gender, customer.city,
+                customer.state, customer.zip_code,
+            )
+            writer.writerow(row)
+        return response
+
+    def export_all_employees(self, _):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=All_Employees.csv'
+        writer = csv.writer(response, dialect='excel')
+        header = ('ID', 'Username', 'First Name', 'Last Name', 'Email', 'Contact', 'Gender',
+                  'City', 'State', 'Zip Code', 'Employee Type', "Employment Date", "Post")
+        writer.writerow(header)
+        for employee in EmployeeProfile.objects.all():
+            row = (
+                employee.id, employee.user.username, employee.user.first_name, employee.user.last_name,
+                employee.user.email, employee.contact, employee.gender, employee.city,
+                employee.state, employee.zip_code, employee.employee_type, employee.employment_date, employee.post
+            )
+            writer.writerow(row)
+        return response
+
+    def export_employee_report(self, _):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename=Daily_Employee_Report.csv'
+        writer = csv.writer(response, dialect='excel')
+        header = ['ID', 'Username', 'First Name', 'Last Name',
+                  'Total Sales', 'Total Volume Sold', 'Total Customers Served', ]
+
+        items = OrderedDict()
+        for item in Item.objects.all():
+            items[item.pk] = item.name
+        for item_name in items.values():
+            header.extend([f"Volume of {item_name} sold",
+                           f"Sales of {item_name}", ])
+        writer.writerow(header)
+
+        today = datetime.today().date()
+        for employee in EmployeeProfile.objects.all():
+            invoices = Invoice.objects.filter(
+                employee=employee, order_timestamp__gte=today)
+            total_sales = sum(x.cost() for x in invoices)
+            total_customers_served = len(invoices)
+
+            purchases = Purchase.objects.filter(
+                invoice__employee=employee, invoice__order_timestamp__gte=today)
+            total_volume_sold = sum(x.volume for x in purchases)
+
+            details = [
+                employee.id, employee.user.username, employee.user.first_name, employee.user.last_name,
+                total_sales, total_volume_sold, total_customers_served
+            ]
+
+            purchases_dict = {item_id: (0, 0) for item_id in items}
+            for purchase in purchases:
+                v, c = purchases_dict[purchase.item.pk]
+                purchases_dict[purchase.item.pk] = (
+                    v + purchase.volume, c + purchase.cost())
+
+            for item_id in items:
+                details.extend(purchases_dict[item_id])
+            writer.writerow(details)
         return response
 
 
