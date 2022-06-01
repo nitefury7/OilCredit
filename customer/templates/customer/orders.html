@@ -77,16 +77,23 @@
 {% block extrascripts %}
 {{ block.super }}
 <script>
+  "use strict";
   $(document).ready(() => { $('#order_history').DataTable(); });
 
-  function getRandomColorWithOpacity() {
-      let letters = '0123456789ABCDEF'.split('');
-      let color = '#';
-      for (let i = 0; i < 6; i++ ) {
-          color += letters[Math.floor(Math.random() * 16)];
-      }
-      color += '50';
-      return color;
+  String.prototype.hashCode = function () {
+    let FNV1_32A_INIT = 0x811c9dc5;
+    let hval = FNV1_32A_INIT;
+    for (let i = 0; i < this.length; ++i) {
+      hval ^= this.charCodeAt(i);
+      hval +=
+        (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+    }
+    return hval >>> 0;
+  };
+
+  function getColor(label, opacity = "ff") {
+    let hash = label.hashCode();
+    return "#" + Math.abs(label.hashCode()).toString(16).substring(0, 6) + opacity;
   }
 
   $(document).ready(async () => {
@@ -100,7 +107,7 @@
         datasets: [{
           label: 'Spendings by product',
           data: Object.values(json),
-          backgroundColor: Object.keys(json).map((x) => getRandomColorWithOpacity()),
+          backgroundColor: Object.keys(json).map((x) => getColor(x, '50')),
           borderColor: ['#FF0000FF'],
           borderWidth: 1,
           

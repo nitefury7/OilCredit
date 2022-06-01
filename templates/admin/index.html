@@ -6,54 +6,54 @@
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
 <style>
   .dashboard #content {
-      width: initial;
+    width: initial;
   }
 
   .stats-main {
-      display: flex;
-      margin-top: 2rem;
-      gap: 50px;
-      flex-flow: wrap;
-      align-items: center;
-      justify-content: space-around;
-  } 
+    display: flex;
+    margin-top: 2rem;
+    gap: 50px;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content: space-around;
+  }
 
   .stats-counter {
-      display: flex;
-      flex-flow: wrap;
-      align-items: center;
-      justify-content: space-around;
-      gap: 3rem;
-      margin-left: 2rem;
+    display: flex;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content: space-around;
+    gap: 3rem;
+    margin-left: 2rem;
   }
 
   .stats-counter > * {
-      background-color: rgba(255, 0, 0, 0.2);
-      font-size: 1.5em;
-      border: 1px solid red;
-      border-radius: 20px;
-      color: var(--body-fg);
-      padding: 1.5em;
-      text-align: center;
+    background-color: rgba(255, 0, 0, 0.2);
+    font-size: 1.5em;
+    border: 1px solid red;
+    border-radius: 20px;
+    color: var(--body-fg);
+    padding: 1.5em;
+    text-align: center;
   }
 
-  .stats-counter>div>* {
-      font-weight: bold;
-      margin-bottom: 0.4rem;
+  .stats-counter > div > * {
+    font-weight: bold;
+    margin-bottom: 0.4rem;
   }
 
   .stats-charts {
-      display: flex;
-      gap: 50px;
-      flex-flow: wrap;
-      align-items: center;
-      justify-content: space-around;
+    display: flex;
+    gap: 50px;
+    flex-flow: wrap;
+    align-items: center;
+    justify-content: space-around;
   }
   .stats-charts > * {
-      max-height: 500px;
-      max-width: 500px;
+    max-height: 500px;
+    max-width: 500px;
   }
-    
+
   .stats-charts-section {
     margin-top: 2rem;
   }
@@ -101,7 +101,8 @@
     color: var(--primary);
   }
 
-  .export a:hover, a:focus {
+  .export a:hover,
+  a:focus {
     text-decoration: none;
     opacity: 0.8;
   }
@@ -111,138 +112,150 @@
     opacity: 0.7;
   }
 
-
   .badge-button-container {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
   }
-
 </style>
 {% endblock %}
 
 {% block extrahead %}
 {{ block.super }}
 <script>
-  function getRandomColor(opacity='FF') {
-      let letters = '0123456789ABCDEF'.split('');
-      let color = '#';
-      for (let i = 0; i < 6; i++ ) {
-          color += letters[Math.floor(Math.random() * 16)];
-      }
-      color += opacity;
-      return color;
+  "use strict";
+  String.prototype.hashCode = function () {
+    let FNV1_32A_INIT = 0x811c9dc5;
+    let hval = FNV1_32A_INIT;
+    for (let i = 0; i < this.length; ++i) {
+      hval ^= this.charCodeAt(i);
+      hval +=
+        (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
+    }
+    return hval >>> 0;
+  };
+
+  function getColor(label, opacity = "ff") {
+    let hash = label.hashCode();
+    return "#" + Math.abs(label.hashCode()).toString(16).substring(0, 6) + opacity;
   }
 
   $(document).ready(async () => {
-      const ctx = document.getElementById('recent_customers').getContext('2d');
-      let response = await fetch("{% url 'admin:recent_customers' %}");
-      let json = await response.json();
-      const data = {
-        labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
-        datasets: [{
-          label: 'Recent Customers',
+    const ctx = document.getElementById('recent_customers').getContext('2d');
+    let response = await fetch("{% url 'admin:recent_customers' %}");
+    let json = await response.json();
+    const data = {
+      labels: ["9", "8", "7", "6", "5", "4", "3", "2", "1", "Today"],
+      datasets: [
+        {
+          label: "Recent Customers",
           data: json,
-          backgroundColor: Object.keys(json).map((x) => getRandomColor('50')),
-          borderColor: ['#B000A0'],
+          backgroundColor: Object.keys(json).map((x) => getColor(x, "50")),
+          borderColor: ["#B000A0"],
           borderWidth: 1,
-        }]
-      };
-      const config = {
-        type: 'bar',
-        data: data,
-        options: {
-          maintainAspectRatio: true,
-          aspectRatio: 1,
         },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Signups during the last ten days.'
-            }
-        }
-      };
-      const chart = new Chart(ctx, config);
+      ],
+    };
+    const config = {
+      type: "bar",
+      data: data,
+      options: {
+        maintainAspectRatio: true,
+        aspectRatio: 1,
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "Signups during the last ten days.",
+        },
+      },
+    };
+    const chart = new Chart(ctx, config);
   });
 
   $(document).ready(async () => {
-      const ctx = document.getElementById('recent_sales').getContext('2d');
-      let response = await fetch("{% url 'admin:recent_sales' %}");
-      let json = await response.json();
-      const data = {
-        labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
-        datasets: [{
-          label: 'Recent Sales',
+    const ctx = document.getElementById("recent_sales").getContext("2d");
+    let response = await fetch("{% url 'admin:recent_sales' %}");
+    let json = await response.json();
+    const data = {
+      labels: ["9", "8", "7", "6", "5", "4", "3", "2", "1", "Today"],
+      datasets: [
+        {
+          label: "Recent Sales",
           data: json,
           fill: true,
-          borderColor: 'rgb(75, 192, 192)',
-          tension: 0.1
-        }]
-      };
-      const config = {
-        type: 'line',
-        data: data,
-        options: {
-          maintainAspectRatio: true,
-          aspectRatio: 1,
+          borderColor: "#f87",
+          tension: 0.1,
         },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Sales during the last ten days.'
-            }
-        }
-      };
-      const chart = new Chart(ctx, config);
+      ],
+    };
+    const config = {
+      type: "line",
+      data: data,
+      options: {
+        maintainAspectRatio: true,
+        aspectRatio: 1,
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: "Sales during the last ten days.",
+        },
+      },
+    };
+    const chart = new Chart(ctx, config);
   });
 
   $(document).ready(async () => {
-      const ctx = document.getElementById('sales_by_item').getContext('2d');
-      let response = await fetch("{% url 'admin:sales_by_item' %}");
-      let json = await response.json();
-      const data = {
-          labels: Object.keys(json),
-          datasets: [
-              {
-                  label: 'sales_by_item',
-                  data: Object.values(json),
-                  backgroundColor: Object.keys(json).map((x) => getRandomColor()),
-              }
-          ]
-      };
-      const config = {
-          type: 'doughnut',
-          data: data,
-          options: {
-              responsive: true,
-              plugins: {
-                  legend: {
-                      position: 'bottom',
-                  },
-                  title: {
-                      display: true,
-                      text: 'Total Sales by Item'
-                  }
-              }
+    const ctx = document.getElementById("sales_by_item").getContext("2d");
+    let response = await fetch("{% url 'admin:sales_by_item' %}");
+    let json = await response.json();
+    const data = {
+      labels: Object.keys(json),
+      datasets: [
+        {
+          label: "sales_by_item",
+          data: Object.values(json),
+          backgroundColor: Object.keys(json).map((x) => getColor(x)),
+        },
+      ],
+    };
+    const config = {
+      type: "doughnut",
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: "bottom",
           },
-      };
-      const chart = new Chart(ctx, config);
+          title: {
+            display: true,
+            text: "Total Sales by Item",
+          },
+        },
+      },
+    };
+    const chart = new Chart(ctx, config);
   });
 </script>
 {% endblock %}
 
-{% block coltype %}{% endblock %}
+{% block coltype %}{% endblock %} 
 
-{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+{% block bodyclass %}
+{{ block.super }}
+dashboard
+{% endblock %}
 
 {% block content %}
 <div id="content-main">
-  <div class='stats-main'>
-    <div style='min-width:360px;'>
+  <div class="stats-main">
+    <div style="min-width: 360px">
       {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
     </div>
 
-    <div class='stats-counter'>
+    <div class="stats-counter">
       <div>
         <div><i class="fa-solid fa-sack-dollar"></i> &nbsp; Total Sales</div>
         {{ total_sales }}
@@ -260,21 +273,19 @@
 
   <!-- canvas container container -->
   <div class="stats-charts-section">
-    <h1><i class="fa-solid fa-chart-line"></i> General Statistics </h1>
-    <div class='stats-charts'>
+    <h1><i class="fa-solid fa-chart-line"></i> General Statistics</h1>
+    <div class="stats-charts">
       <canvas id="sales_by_item" width="500" height="500"></canvas>
       <canvas id="recent_sales" width="500" height="500"></canvas>
       <canvas id="recent_customers" width="500" height="500"></canvas>
     </div>
   </div>
 
-  <div class='export'>
-    <h1> <i class="fa-solid fa-file-export"></i> Export </h1>
+  <div class="export">
+    <h1><i class="fa-solid fa-file-export"></i> Export</h1>
     <div class="export-section-container">
       <div class="export-section">
-        <h2>
-          <i class="fa-solid fa-receipt"></i> Invoices 
-        </h2>
+        <h2><i class="fa-solid fa-receipt"></i> Invoices</h2>
         <div class="badge-button-container">
           <a href="{% url 'admin:export_all_invoices' %}"> All Invoices</a>
           <a href="{% url 'admin:export_daily_invoices' %}">Daily Invoices</a>
@@ -282,18 +293,14 @@
       </div>
 
       <div class="export-section">
-        <h2>
-          <i class="fa-solid fa-user"></i> Customer
-        </h2>
+        <h2><i class="fa-solid fa-user"></i> Customer</h2>
         <div class="badge-button-container">
           <a href="#">Profile Information</a>
         </div>
       </div>
 
       <div class="export-section">
-        <h2>
-          <i class="fa-solid fa-user-astronaut"></i> Employee
-        </h2>
+        <h2><i class="fa-solid fa-user-astronaut"></i> Employee</h2>
         <div class="badge-button-container">
           <a href="#">Profile Information</a>
           <a href="#">Daily Report</a>
