@@ -1,10 +1,9 @@
-import json
 import csv
 from collections import OrderedDict
 from datetime import datetime, timedelta
 
 from django.urls import path
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -84,10 +83,7 @@ class CustomAdminSite(admin.AdminSite):
             new_customers.append(len(customers))
             prev_date = date
 
-        return HttpResponse(
-            json.dumps(list(reversed(new_customers))),
-            content_type='application/json'
-        )
+        return JsonResponse(list(reversed(new_customers)), safe=False)
 
     def recent_sales(self, _):
         today = datetime.today()
@@ -103,7 +99,7 @@ class CustomAdminSite(admin.AdminSite):
             sales.append(sum(invoice.cost() for invoice in invoices))
             prev_date = date
 
-        return HttpResponse(json.dumps(list(reversed(sales))), content_type='application/json')
+        return JsonResponse(list(reversed(sales)), safe=False)
 
     def sales_by_item(self, _):
         items = Item.objects.all()
@@ -112,7 +108,7 @@ class CustomAdminSite(admin.AdminSite):
             purchases = Purchase.objects.filter(item=item)
             sales = sum(purchase.cost() for purchase in purchases)
             sales_dict[str(item)] = sales
-        return HttpResponse(json.dumps(sales_dict), content_type='application/json')
+        return JsonResponse(sales_dict)
 
     def export_all_customers(self, _):
         response = HttpResponse(content_type='text/csv')
@@ -129,7 +125,6 @@ class CustomAdminSite(admin.AdminSite):
         return self.export_invoices(Invoice.objects.filter(order_timestamp__gte=last_date))
 
     def export_invoices(self, qs):
-
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=All_Invoices.csv'
         writer = csv.writer(response)
