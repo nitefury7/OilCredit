@@ -5,27 +5,119 @@
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">
 <style>
+  .dashboard #content {
+      width: initial;
+  }
+
+  .stats-main {
+      display: flex;
+      margin-top: 2rem;
+      gap: 50px;
+      flex-flow: wrap;
+      align-items: center;
+      justify-content: space-around;
+  } 
+
+  .stats-counter {
+      display: flex;
+      flex-flow: wrap;
+      align-items: center;
+      justify-content: space-around;
+      gap: 3rem;
+      margin-left: 2rem;
+  }
+
+  .stats-counter > * {
+      background-color: rgba(255, 0, 0, 0.2);
+      font-size: 1.5em;
+      border: 1px solid red;
+      border-radius: 20px;
+      color: var(--body-fg);
+      padding: 1.5em;
+      text-align: center;
+  }
+
+  .stats-counter>div>* {
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+  }
+
+  .stats-charts {
+      display: flex;
+      gap: 50px;
+      flex-flow: wrap;
+      align-items: center;
+      justify-content: space-around;
+  }
+  .stats-charts > * {
+      max-height: 500px;
+      max-width: 500px;
+  }
+    
+  .stats-charts-section {
+    margin-top: 2rem;
+  }
+
+  .export {
+    background-color: #eee;
+    padding: 3rem;
+    margin: 1rem;
+    margin-top: 10rem;
+  }
+
+  .export-section-container {
+    margin-top: 3rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .export-section {
+    background-color: #ddd;
+    padding: 1rem 3rem;
+    border-radius: 20px;
+  }
+
+  .export-sections > div {
+    margin: 1rem 5px;
+  }
+
   .export a {
-    margin: 8px 10px;
+    margin: 5px;
     padding: 10px;
     border: 1px solid #aaa;
     border-radius: 15px;
-    background-color: green;
+    background-color: var(--primary);
     color: #fff;
     text-decoration: none;
   }
+
+  .export h2 {
+    margin: 1.5rem 5px;
+    font-size: 1.2rem;
+  }
+
+  .export h1 {
+    color: var(--primary);
+  }
+
   .export a:hover, a:focus {
     text-decoration: none;
     opacity: 0.8;
   }
+
   .export a:active {
     text-decoration: none;
     opacity: 0.7;
   }
-  .export > div {
-    margin: 20px 5px;
 
+
+  .badge-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
   }
+
 </style>
 {% endblock %}
 
@@ -152,37 +244,62 @@
 
     <div class='stats-counter'>
       <div>
-        <div>Total Sales</div>
+        <div><i class="fa-solid fa-sack-dollar"></i> &nbsp; Total Sales</div>
         {{ total_sales }}
       </div>
       <div>
-        <div>Customers</div>
+        <div><i class="fa-solid fa-user"></i> &nbsp; Customers</div>
         {{ customer_count }}
       </div>
       <div>
-        <div>Employees</div>
+        <div><i class="fa-solid fa-user-astronaut"></i> &nbsp; Employees</div>
         {{ employee_count }}
       </div>
     </div>
   </div>
 
   <!-- canvas container container -->
-  <div class='stats-charts'>
-    <canvas id="sales_by_item" width="500" height="500"></canvas>
-    <canvas id="recent_sales" width="500" height="500"></canvas>
-    <canvas id="recent_customers" width="500" height="500"></canvas>
-  </div>
-  <div class='export'>
-    <h1>Export</h1>
-    <h2> Invoices </h2>
-    <div>
-      <a href="{% url 'admin:export_all_invoices' %}"> All Invoices</a>
-      <a href="{% url 'admin:export_daily_invoices' %}">Daily Invoices</a>
+  <div class="stats-charts-section">
+    <h1><i class="fa-solid fa-chart-line"></i> General Statistics </h1>
+    <div class='stats-charts'>
+      <canvas id="sales_by_item" width="500" height="500"></canvas>
+      <canvas id="recent_sales" width="500" height="500"></canvas>
+      <canvas id="recent_customers" width="500" height="500"></canvas>
     </div>
-    <h2>Customer/Employee</h2>
-    <div>
-      <a href="#">Customer Information</a>
-      <a href="#">Employee Information</a>
+  </div>
+
+  <div class='export'>
+    <h1> <i class="fa-solid fa-file-export"></i> Export </h1>
+    <div class="export-section-container">
+      <div class="export-section">
+        <h2>
+          <i class="fa-solid fa-receipt"></i> Invoices 
+        </h2>
+        <div class="badge-button-container">
+          <a href="{% url 'admin:export_all_invoices' %}"> All Invoices</a>
+          <a href="{% url 'admin:export_daily_invoices' %}">Daily Invoices</a>
+        </div>
+      </div>
+
+      <div class="export-section">
+        <h2>
+          <i class="fa-solid fa-user"></i> Customer
+        </h2>
+        <div class="badge-button-container">
+          <a href="#">Profile Information</a>
+        </div>
+      </div>
+
+      <div class="export-section">
+        <h2>
+          <i class="fa-solid fa-user-astronaut"></i> Employee
+        </h2>
+        <div class="badge-button-container">
+          <a href="#">Profile Information</a>
+          <a href="#">Daily Report</a>
+          <a href="#">Full Report</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>
