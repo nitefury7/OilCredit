@@ -1,35 +1,52 @@
-from tkinter import W
+from datetime import timedelta
+import random
+
 from django.core.management.base import BaseCommand
-from customer.models import Item, CustomerProfile
-from employee.models import EmployeeProfile
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
+
+from customer.models import Item, CustomerProfile, Invoice, Purchase
+from employee.models import EmployeeProfile
+from home.utils import get_profile
 
 
 class Command(BaseCommand):
     help = 'This command populates the database with default db'
 
     def handle(self, *_, **__):
-        self.create_super_user(username='ayush', password='ayush')
-        self.create_customer({
-            "username": "customer",
-            "password": "ayush123",
-            "first_name": "Member",
-            "last_name": "Rebmem",
-            "email": "member@example.com",
-            "gender": 0,
-            "city": "Kathmandu",
-            "state": "Bagmati",
-            "zip_code": "44600",
-            "contact": "+9779876543210",
-        })
-        self.create_employee({
-            "username": "employee",
-            "password": "ayush123",
-            "first_name": "Employee",
-            "last_name": "Eeyolpme",
-            "email": "employee@example.com",
+        PASSWORD = "ayush123"
+        NUM_EMPLOYEES = 5
+        NUM_CUSTOMERS = 5
+        NUM_TRANSACTIONS = 20
+
+        self.create_items()
+        self.create_super_user(username='admin', password='admin')
+
+        employees = []
+        for i in range(NUM_EMPLOYEES):
+            employee_details = self.create_random_employee_details(
+                f"employee{i}", PASSWORD)
+            employees.append(self.create_employee(employee_details))
+
+        customers = []
+        for i in range(NUM_CUSTOMERS):
+            customer_details = self.create_random_customer_details(
+                f"customer{i}", PASSWORD)
+            customers.append(self.create_customer(customer_details))
+
+        for customer in customers:
+            for employee in employees:
+                self.create_random_transactions(
+                    customer=customer, employee=employee, size=NUM_TRANSACTIONS)
+
+    def create_random_employee_details(self, username, password):
+        return {
+            "username": username,
+            "password": password,
+            "first_name": username,
+            "last_name": username[::-1],
+            "email": f"{username}@example.com",
             "gender": 0,
             "city": "Kathmandu",
             "state": "Bagmati",
@@ -38,8 +55,21 @@ class Command(BaseCommand):
             "employment_date": timezone.now(),
             "employee_type": 0,
             "post": "Manager",
-        })
-        self.create_items()
+        }
+
+    def create_random_customer_details(self, username, password):
+        return {
+            "username": username,
+            "password": password,
+            "first_name": username,
+            "last_name": username[::-1],
+            "email": f"{username}@example.com",
+            "gender": 0,
+            "city": "Kathmandu",
+            "state": "Bagmati",
+            "zip_code": "44600",
+            "contact": "+9779876543210",
+        }
 
     def create_items(self):
         items = (
@@ -51,10 +81,14 @@ class Command(BaseCommand):
             {'name': 'OIL', 'description': '', 'rate': 2.3},
             {'name': 'MISC.', 'description': '', 'rate': 2.3},
         )
+        ret = []
         for item in items:
             if not Item.objects.filter(name=item['name']).exists():
-                Item(**item).save()
+                i = Item(**item)
+                i.save()
+                ret.append(i)
                 self.stdout.write(self.style.SUCCESS(f"Added {item['name']}"))
+        return ret
 
     def create_customer(self, details):
         if not User.objects.filter(username=details["username"]).exists():
@@ -76,6 +110,8 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS(
                 f"Created customer '{details['username']}', with password '{details['password']}'"))
+            return user
+        return User.objects.get(username=details['username'])
 
     def create_employee(self, details):
         if not User.objects.filter(username=details["username"]).exists():
@@ -101,6 +137,8 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS(
                 f"Created employee '{details['username']}', with password '{details['password']}'"))
+            return user
+        return User.objects.get(username=details['username'])
 
     def create_super_user(self, username, password):
         if not User.objects.filter(username=username).exists():
@@ -110,3 +148,44 @@ class Command(BaseCommand):
             user.save()
             self.stdout.write(self.style.SUCCESS(
                 f"Created superuser '{username}', with password '{password}'"))
+            return user
+        return User.objects.get(username=username)
+
+    def create_random_transactions(self, customer, employee, size=1):
+        for _ in range(size):
+            invoice = self.create_invoice({
+                'customer': customer,
+                'employee': employee,
+                'order_timestamp': timezone.now() - timedelta(days=random.randint(0, 10))
+            })
+
+            for item in random.sample(list(Item.objects.all()), 5):
+                self.create_purchase({
+                    'invoice': invoice,
+                    'item': item,
+                    'volume': random.randint(1, 10),
+                    'rate': item.rate,
+                })
+        self.stdout.write(self.style.SUCCESS(f"Created {size} random invoice"))
+
+    def create_invoice(self, details):
+        customer = get_profile(CustomerProfile, details['customer'])
+        employee = get_profile(EmployeeProfile, details['employee'])
+        if customer and employee:
+            invoice = Invoice.objects.create(
+                customer=customer,
+                employee=employee,
+                order_timestamp=details['order_timestamp'],
+            )
+            invoice.save()
+            return invoice
+
+    def create_purchase(self, details):
+        purchase = Purchase.objects.create(
+            invoice=details['invoice'],
+            item=details['item'],
+            volume=details['volume'],
+            rate=details['rate'],
+        )
+        purchase.save()
+        return purchase
