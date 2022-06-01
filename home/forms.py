@@ -39,7 +39,6 @@ class SignUpForm(forms.Form):
                     'password',
                     'confirm_password',
                     'email',
-                    'customer_type',
                     css_class='col-md-6',
                 ),
                 Div(
@@ -81,7 +80,6 @@ class SignUpForm(forms.Form):
         user.set_password(data['password'])
         customer_profile = CustomerProfile(
             user=user,
-            customer_type=data['customer_type'],
             gender=data['gender'],
             city=data['city'],
             state=data['state'],
