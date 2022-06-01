@@ -39,7 +39,7 @@ def spendings_by_product(request):
 
 @ensure_auth(CustomerProfile)
 def latest_spendings(request):
-    today = datetime.today()
+    today = datetime.today().date()
     invoices_all = Invoice.objects.all()
     spendings = []
     prev_date = datetime.today()
