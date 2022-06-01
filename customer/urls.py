@@ -10,4 +10,6 @@ urlpatterns = [
     # Graph API
     path('spendings_by_product/', views.spendings_by_product,
          name='spendings_by_product'),
+    path('latest_spendings/', views.latest_spendings,
+         name='latest_spendings'),
 ]

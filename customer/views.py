@@ -1,6 +1,6 @@
-import json
+from datetime import datetime, timedelta
 
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import ListView
@@ -34,7 +34,26 @@ def spendings_by_product(request):
             item=item, invoice__customer=customer)
         sales = sum(purchase.cost() for purchase in purchases)
         sales_dict[str(item)] = sales
-    return HttpResponse(json.dumps(sales_dict), content_type='application/json')
+    return JsonResponse(sales_dict)
+
+
+@ensure_auth(CustomerProfile)
+def latest_spendings(request):
+    today = datetime.today()
+    invoices_all = Invoice.objects.all()
+    spendings = []
+    prev_date = datetime.today()
+    for i in range(10):
+        date = today - timedelta(days=i)
+        invoices = invoices_all.filter(
+            customer=get_profile(CustomerProfile, request.user),
+            order_timestamp__gte=date,
+            order_timestamp__lte=prev_date
+        )
+        spendings.append(sum(invoice.cost() for invoice in invoices))
+        prev_date = date
+
+    return JsonResponse(list(reversed(spendings)), safe=False)
 
 
 @ensure_auth(CustomerProfile)
