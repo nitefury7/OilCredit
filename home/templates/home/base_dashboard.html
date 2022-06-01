@@ -8,11 +8,6 @@
       <i class="fa-solid fa-bars"></i>
     </button>
     <span class="fs-4 text-white">𝄜 Dashboard</span>
-    <div class="ms-auto">
-      {% block user_tools %}
-      <a class="btn btn-warning" href="{% url 'home:logout' %}">Logout</a>
-      {% endblock %}
-    </div>
   </div>
 </header>
 {% endblock %} 
@@ -32,10 +27,9 @@
 <div class="container-fluid" id="content_container">
   <div class="row">
     <div class="col-3 bg-dark text-light" id="sidebar">
-      <div class="sticky-top">
+      <div class="sticky-top vh-100 d-flex flex-column">
         {% block sidebar %}
         {% block sidebar_top%}
-          <h2 class='p-3 px-5 m-3 ms-0' style='background-color: #533; clip-path: polygon( 0% 0%, calc(100% - 2rem) 0%, 100% 50%, calc(100% - 2rem) 100%, 0% 100%);' > {{ user.get_username }} </h2>
         {% endblock %}
 
         {% block sidebar_nav_header %}
@@ -46,6 +40,9 @@
         {% endblock %}
 
         {% block sidebar_nav %} {% endblock %}
+        {% block sidebar_bottom %}
+          <a class="btn btn-warning mt-auto m-2" href="{% url 'home:logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout </a>
+        {% endblock %}
         {% endblock %}
       </div>
     </div>

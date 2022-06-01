@@ -93,7 +93,13 @@ def place_order(request):
             messages.success(request, "Your order was placed.")
             return HttpResponse("")
         else:
-            messages.error(request, "Invalid submission")
+            msgs = []
+            for form in forms:
+                errors = [f"{field}: {','.join(error_list)}" for field,
+                          error_list in form.errors.items()]
+                msgs.extend(errors)
+            msgs = "".join([f"<li>{msg}</li>" for msg in msgs])
+            messages.error(request, f"<ul>{msgs}</ul>")
             return HttpResponse(status=400)
 
     return render(request, 'employee/place_order.html')

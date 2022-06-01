@@ -138,13 +138,16 @@
 {% block main %}
 <div class='container py-5'>
   
-    <h1>Customer</h1> 
+    <h1>Select Customer</h1> 
     <select id='customer_select' class="form-select mx-2" aria-label="Customer username">
     </select>
     
     <div id='customer_profile_card' class="card m-3 bg-light d-none" style="width: 50ch;">
       <div class="card-body">
-        <h5 class="card-title">Customer Profile</h5>
+        <h5 class="card-title">
+          <i class="fa-solid fa-user"></i>
+          Customer Profile
+        </h5>
         <p class="card-text">
           <table id='customer_profile' class='table'>
           </table>
@@ -172,7 +175,10 @@
       <div class="col-md-6">
         <div class="card m-3 bg-light" style="width: 50ch;">
           <div class="card-body">
-            <h5 class="card-title">Receipt</h5>
+            <h5 class="card-title">
+              <i class="fa-solid fa-receipt"></i>
+              Receipt
+            </h5>
             <table class="table">
               <thead>
                 <tr>
@@ -185,7 +191,30 @@
               <tbody id='receipt_table'>
               </tbody>
             </table>
-            <button onclick='onSubmit()' id='submit' class="btn btn-warning" id="submit_receipt"> Submit </button>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-lg btn-warning" data-bs-toggle="modal" data-bs-target="#confirm-order-modal">
+              Submit
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="confirm-order-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirm-order-modal-label" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="confirm-order-modal-label">Confirm your order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Do you want to place the order? This action cannot be undone.
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button onclick='onSubmit()' id='submit' type="button" class="btn btn-warning">Confirm</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
