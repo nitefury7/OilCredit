@@ -258,7 +258,7 @@ dashboard
     <div class="stats-counter">
       <div>
         <div><i class="fa-solid fa-sack-dollar"></i> &nbsp; Total Sales</div>
-        {{ total_sales }}
+        {{ total_sales | floatformat:4 }}
       </div>
       <div>
         <div><i class="fa-solid fa-user"></i> &nbsp; Customers</div>

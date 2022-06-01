@@ -33,7 +33,7 @@
                       <div class="accordion" id="details-{{invoice.id}}">
                           <div class="accordion-item">
                               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#details-body-{{invoice.id}}" aria-expanded="true" aria-controls="details-body-{{invoice.id}}">
-                                  Total: {{invoice.cost}}
+                                  Total: {{invoice.cost | floatformat:4}}
                               </button>
                               <div id="details-body-{{invoice.id}}" class="accordion-collapse collapse">
                                   <table class="table table-striped">
@@ -51,12 +51,12 @@
                                           <td> {{ purchase.item }} </td>
                                           <td> {{ purchase.volume }} </td>
                                           <td> {{ purchase.rate }} </td>
-                                          <td> {{ purchase.cost }} </td>
+                                          <td> {{ purchase.cost | floatformat:4 }} </td>
                                       </tr>
                                       {% endfor %}
                                       <tr class='total-row fw-bold'>
                                           <td colspan='3' class='text-end'> Total </td>
-                                          <td> {{ invoice.cost }} </td>
+                                          <td> {{ invoice.cost | floatformat:4 }} </td>
                                       </tr>
                                       </tbody>
                                   </table>
