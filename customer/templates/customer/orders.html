@@ -41,7 +41,6 @@
                                           <tr>
                                               <td>Item</td>
                                               <td>Volume</td>
-                                              <td>Rate</td>
                                               <td>Cost</td>
                                           </tr>
                                       </thead>
@@ -50,12 +49,11 @@
                                       <tr>
                                           <td> {{ purchase.item }} </td>
                                           <td> {{ purchase.volume }} </td>
-                                          <td> {{ purchase.rate }} </td>
                                           <td> {{ purchase.cost | floatformat:4 }} </td>
                                       </tr>
                                       {% endfor %}
                                       <tr class='total-row fw-bold'>
-                                          <td colspan='3' class='text-end'> Total </td>
+                                          <td colspan='2' class='text-end'> Total </td>
                                           <td> {{ invoice.cost | floatformat:4 }} </td>
                                       </tr>
                                       </tbody>
