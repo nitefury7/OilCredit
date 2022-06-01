@@ -163,7 +163,7 @@ class CustomAdminSite(admin.AdminSite):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=All_Customers.csv'
         writer = csv.writer(response, dialect='excel')
-        header = ('ID', 'Username', 'First Name', 'Last Name', 'Email',
+        header = ('Customer ID', 'Username', 'First Name', 'Last Name', 'Email',
                   'Contact', 'Gender', 'City', 'State', 'Zip Code', )
         writer.writerow(header)
         for customer in CustomerProfile.objects.all():
@@ -179,7 +179,7 @@ class CustomAdminSite(admin.AdminSite):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=All_Employees.csv'
         writer = csv.writer(response, dialect='excel')
-        header = ('ID', 'Username', 'First Name', 'Last Name', 'Email', 'Contact', 'Gender',
+        header = ('Employee ID', 'Username', 'First Name', 'Last Name', 'Email', 'Contact', 'Gender',
                   'City', 'State', 'Zip Code', 'Employee Type', "Employment Date", "Post")
         writer.writerow(header)
         for employee in EmployeeProfile.objects.all():
@@ -195,7 +195,7 @@ class CustomAdminSite(admin.AdminSite):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename=Daily_Employee_Report.csv'
         writer = csv.writer(response, dialect='excel')
-        header = ['ID', 'Username', 'First Name', 'Last Name',
+        header = ['Employee ID', 'Username', 'First Name', 'Last Name',
                   'Total Sales', 'Total Volume Sold', 'Total Customers Served', ]
 
         items = OrderedDict()
