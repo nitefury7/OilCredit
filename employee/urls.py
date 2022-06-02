@@ -10,5 +10,7 @@ urlpatterns = [
     path('get_customers/', views.get_customers, name='get_customers'),
     path('get_items/', views.get_items, name='get_items'),
     path('get_customer_profile/<int:id>',
-         views.get_customer_profile, name='get_customer_profile'),
+         views.get_customer_profile, name='get_customer_profile'),  
+    path('export_all_invoices/', views.export_all_invoices, name='export_all_invoices'),
+    path('export_daily_invoices/', views.export_daily_invoices, name='export_daily_invoices'),
 ]

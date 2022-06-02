@@ -2,6 +2,72 @@
 {% load bootstrap_message %}
 {% load get_purchases %}
 
+{% block extrastyle %}
+{{ block.super }}
+
+<style>
+  .export {
+    background-color: #eee;
+    padding: 3rem;
+    margin: 1rem;
+    margin-top: 10rem;
+  }
+
+  .export-section-container {
+    margin-top: 3rem;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .export-section {
+    background-color: #ddd;
+    padding: 1rem 3rem;
+    border-radius: 20px;
+  }
+
+  .export-sections > div {
+    margin: 1rem 5px;
+  }
+
+  .export a {
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid #aaa;
+    border-radius: 15px;
+    background-color: var(--primary);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .export h2 {
+    margin: 1.5rem 5px;
+    font-size: 1.2rem;
+  }
+
+  .export h1 {
+    color: var(--primary);
+  }
+
+  .export a:hover,
+  a:focus {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  .export a:active {
+    text-decoration: none;
+    opacity: 0.7;
+  }
+
+  .badge-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+</style>
+{% endblock %}
+
 {% block extrascripts %}
 {{ block.super }}
 <script>
@@ -74,5 +140,19 @@
             {% endfor %}
         </tbody>
     </table>
+
+
+    <div class="export">
+        <h1><i class="fa-solid fa-file-export"></i> Export</h1>
+        <div class="export-section-container">
+        <div class="export-section">
+            <h2><i class="fa-solid fa-receipt"></i> Invoices</h2>
+            <div class="badge-button-container">
+            <a href="{% url 'employee:export_all_invoices' %}" class="bg-secondary"> All Invoices</a>
+            <a href="{% url 'employee:export_daily_invoices' %}" class="bg-secondary">Daily Invoices</a>
+            </div>
+        </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
