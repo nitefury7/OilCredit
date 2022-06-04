@@ -9,6 +9,11 @@
 <script src="{% static 'employee/place_order.js' %}"></script>
 {% endblock %}
 
+{% block extrastyle %}
+{{ block.super }}
+<style> .card-body { background-color: #ffe; } </style>
+{% endblock %}
+
 {% block main %}
 <div class='container py-5'>
   
@@ -40,6 +45,11 @@
           {{ message | bootstrap_message }}
         {% endfor %}
         {% endif %}
+        <div class='d-flex justify-content-between w-75 ms-3 fw-bold'>
+          <span> <i class="fa-solid fa-box"></i> Item</span>
+          <span> <i class="fa-solid fa-bottle-water"></i>  Volume</span>
+          <span> <i class="fa-solid fa-sack-dollar"></i>  Rate</span>
+        </div>
           
         <div id='orders_list'>
         </div>

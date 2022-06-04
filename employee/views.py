@@ -70,6 +70,7 @@ def get_items(_):
             "id": item.pk,
             "rate": item.rate,
             "name": item.name,
+            "can_set_price": item.can_set_price
         })
     return JsonResponse(items, safe=False)
 
@@ -83,13 +84,12 @@ def place_order(request):
                           order_timestamp=timezone.now(),
                           employee=get_profile(EmployeeProfile, request.user))
 
-        forms = []
-        for purchase_dict in json_form['purchases']:
-            item = get_object_or_404(Item, pk=purchase_dict['item'])
-            purchase_dict['rate'] = item.rate
-            forms.append(PurchaseForm(purchase_dict))
+        forms = [PurchaseForm(purchase) for purchase in json_form['purchases']]
 
-        if all([form.is_valid() for form in forms]):
+        if not forms:
+            messages.error(request, "Cannot process empty form")
+            return HttpResponse(status=400)
+        elif all([form.is_valid() for form in forms]):
             objects = [form.save(commit=False) for form in forms]
             with transaction.atomic():
                 invoice.save()
