@@ -1,7 +1,13 @@
 {% extends 'customer/base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% load bootstrap_message %}
 {% load get_purchases %}
+
+{% block extrascripts %}
+{{ block.super }}
+<script src="{% static 'customer/orders_graph.js' %}"></script>
+{% endblock %}
 
 {% block main %}
 <div class='container-fluid d-flex flex-column flex-wrap py-2'>
@@ -70,87 +76,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block extrascripts %}
-{{ block.super }}
-<script>
-  "use strict";
-  $(document).ready(() => { $('#order_history').DataTable(); });
-
-  String.prototype.hashCode = function () {
-    let FNV1_32A_INIT = 0x811c9dc5;
-    let hval = FNV1_32A_INIT;
-    for (let i = 0; i < this.length; ++i) {
-      hval ^= this.charCodeAt(i);
-      hval +=
-        (hval << 1) + (hval << 4) + (hval << 7) + (hval << 8) + (hval << 24);
-    }
-    return hval >>> 0;
-  };
-
-  function getColor(label, opacity = "ff") {
-    let hash = label.hashCode();
-    return "#" + Math.abs(label.hashCode()).toString(16).substring(0, 6) + opacity;
-  }
-
-  $(document).ready(async () => {
-    const ctx = document.getElementById('spendings_by_product').getContext('2d');
-    let response = await fetch("{% url 'customer:spendings_by_product' %}");
-    let json = await response.json();
-    const myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: Object.keys(json),
-        datasets: [{
-          label: 'Spendings by product',
-          data: Object.values(json),
-          backgroundColor: Object.keys(json).map((x) => getColor(x, '50')),
-          borderColor: ['#FF0000FF'],
-          borderWidth: 1,
-          
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-
-  });
-
-  $(document).ready(async () => {
-      const ctx = document.getElementById('latest_spendings').getContext('2d');
-      let response = await fetch("{% url 'customer:latest_spendings' %}");
-      let json = await response.json();
-      const data = {
-        labels: ['9', '8', '7', '6', '5', '4', '3', '2', '1', 'Today'],
-        datasets: [{
-          label: 'Recent Purchases',
-          data: json,
-          fill: true,
-          borderColor: '#f87',
-          tension: 0.1
-        }]
-      };
-      const config = {
-        type: 'line',
-        data: data,
-        options: {
-          maintainAspectRatio: true,
-          aspectRatio: 1,
-        },
-        plugins: {
-            title: {
-                display: true,
-                text: 'Spendings during the last ten days.'
-            }
-        }
-      };
-      const chart = new Chart(ctx, config);
-  });
-</script>
 {% endblock %}

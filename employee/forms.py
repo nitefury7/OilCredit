@@ -16,6 +16,15 @@ class PurchaseForm(forms.ModelForm):
         model = Purchase
         exclude = ['invoice', ]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        item = cleaned_data['item']
+        if not item.can_set_price:
+            cleaned_data["rate"] = item.rate
+        else:
+            cleaned_data["volume"] = 1
+        return cleaned_data
+
 
 class EmployeeProfileForm(forms.Form):
     email = forms.EmailField(required=False)

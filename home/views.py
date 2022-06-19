@@ -4,6 +4,8 @@ from django.contrib import messages
 from django.views.generic import TemplateView, FormView
 from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
 
 from home.forms import *
 from home.utils import redirect_if_auth
@@ -33,6 +35,10 @@ class Login(FormView):
 def logout(request):
     auth_logout(request)
     return redirect('home:home')
+
+
+def get_csrf_token(request):
+    return JsonResponse(get_token(request), safe=False)
 
 
 @method_decorator(redirect_if_auth, name='dispatch')

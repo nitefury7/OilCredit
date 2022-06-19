@@ -11,6 +11,7 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=2000)
     rate = models.FloatField()
+    can_set_price = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.name)
