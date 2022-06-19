@@ -8,6 +8,9 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
+from django.contrib.auth import logout as auth_logout
+from django.shortcuts import redirect
+
 
 from employee.models import EmployeeProfile
 from customer.models import CustomerProfile, Invoice, Item, Purchase
@@ -75,6 +78,7 @@ class CustomAdminSite(admin.AdminSite):
                 self.export_all_employees), name='export_all_employees'),
             path('export_employee_report', self.admin_view(
                 self.export_employee_report), name='export_employee_report'),
+            path('logout', self.logout, name='logout'),
         ] + urls
 
     def recent_customers(self, _):
@@ -239,6 +243,9 @@ class CustomAdminSite(admin.AdminSite):
             writer.writerow(details)
         return response
 
+    def logout(self,request):
+        auth_logout(request)
+        return redirect('home:home')
 
 admin_site = CustomAdminSite()
 admin_site.register(User, UserAdmin)
