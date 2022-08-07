@@ -10,8 +10,6 @@ from employee.models import EmployeeProfile
 class Item(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=2000)
-    rate = models.FloatField()
-    can_set_price = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.name)
@@ -39,7 +37,7 @@ class Invoice(models.Model):
 
     def cost(self):
         purchases = Purchase.objects.filter(invoice=self)
-        return sum(purchase.cost() for purchase in purchases)
+        return sum(purchase.total for purchase in purchases)
 
     def __str__(self):
         return f"{self.customer.user.username} - {self.employee.user.username}"
@@ -49,10 +47,10 @@ class Purchase(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     volume = models.PositiveIntegerField(validators=[MinValueValidator(1)])
-    rate = models.FloatField(validators=(MinValueValidator(0), ))
+    total = models.FloatField(validators=(MinValueValidator(0), ))
 
-    def cost(self):
-        return self.volume * self.rate
+    def rate(self):
+        return self.total / self.volume
 
     def __str__(self):
-        return f"{self.volume} {self.item.name} at {self.rate}"
+        return f"{self.volume} {self.item.name} at {self.rate()}"

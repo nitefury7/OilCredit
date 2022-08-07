@@ -109,7 +109,7 @@ class CustomAdminSite(admin.AdminSite):
         sales_dict = {}
         for item in items:
             purchases = Purchase.objects.filter(item=item)
-            sales = sum(purchase.cost() for purchase in purchases)
+            sales = sum(purchase.total for purchase in purchases)
             sales_dict[str(item)] = sales
         return JsonResponse(sales_dict)
 
@@ -141,7 +141,7 @@ class CustomAdminSite(admin.AdminSite):
             purchases_dict = {}
             for purchase in purchases:
                 purchases_dict[purchase.item.pk] = (
-                    purchase.volume, purchase.cost())
+                    purchase.volume, purchase.total)
             for item_id in items:
                 details.extend(purchases_dict.get(item_id, (0, 0)))
             details.append(invoice.cost())
@@ -232,7 +232,7 @@ class CustomAdminSite(admin.AdminSite):
             for purchase in purchases:
                 v, c = purchases_dict[purchase.item.pk]
                 purchases_dict[purchase.item.pk] = (
-                    v + purchase.volume, c + purchase.cost())
+                    v + purchase.volume, c + purchase.total)
 
             for item_id in items:
                 details.extend(purchases_dict[item_id])

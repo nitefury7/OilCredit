@@ -73,13 +73,13 @@ class Command(BaseCommand):
 
     def create_items(self):
         items = (
-            {'name': 'PLUS', 'description': '', 'rate': 2.0},
-            {'name': 'UNLD', 'description': '', 'rate': 2.5},
-            {'name': 'SUPER', 'description': '', 'rate': 2.2},
-            {'name': 'DIESEL', 'description': '', 'rate': 1.8},
-            {'name': 'R/DIESEL', 'description': '', 'rate': 2.7},
-            {'name': 'OIL', 'description': '', 'rate': 2.3},
-            {'name': 'MISC.', 'description': '', 'rate': 2.3},
+            {'name': 'PLUS', 'description': ''},
+            {'name': 'UNLD', 'description': ''},
+            {'name': 'SUPER', 'description': ''},
+            {'name': 'DIESEL', 'description': ''},
+            {'name': 'R/DIESEL', 'description': ''},
+            {'name': 'OIL', 'description': ''},
+            {'name': 'MISC.', 'description': ''},
         )
         ret = []
         for item in items:
@@ -164,7 +164,7 @@ class Command(BaseCommand):
                     'invoice': invoice,
                     'item': item,
                     'volume': random.randint(1, 10),
-                    'rate': item.rate,
+                    'total': random.uniform(300, 1000),
                 })
         self.stdout.write(self.style.SUCCESS(f"Created {size} random invoice"))
 
@@ -185,7 +185,7 @@ class Command(BaseCommand):
             invoice=details['invoice'],
             item=details['item'],
             volume=details['volume'],
-            rate=details['rate'],
+            total=details['total'],
         )
         purchase.save()
         return purchase

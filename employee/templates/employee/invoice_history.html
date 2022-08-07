@@ -53,8 +53,8 @@
                                     <tr>
                                         <td> {{ purchase.item }} </td>
                                         <td> {{ purchase.volume }} </td>
-                                        <td> {{ purchase.rate }} </td>
-                                        <td> {{ purchase.cost | floatformat:4 }} </td>
+                                        <td> {{ purchase.rate | floatformat:4 }} </td>
+                                        <td> {{ purchase.total }} </td>
                                     </tr>
                                     {% endfor %}
                                     <tr class='total-row fw-bold'>

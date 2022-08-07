@@ -33,7 +33,7 @@ def spendings_by_product(request):
     for item in items:
         purchases = Purchase.objects.filter(
             item=item, invoice__customer=customer)
-        sales = sum(purchase.cost() for purchase in purchases)
+        sales = sum(purchase.total for purchase in purchases)
         sales_dict[str(item)] = sales
     return JsonResponse(sales_dict)
 
@@ -50,7 +50,7 @@ def latest_spendings(request):
             order_timestamp__gte=date,
             order_timestamp__lte=date + timedelta(days=1),
         )
-        spendings.append(sum(invoice.cost() for invoice in invoices))
+        spendings.append(sum(invoice.total for invoice in invoices))
 
     return JsonResponse(list(reversed(spendings)), safe=False)
 

@@ -60,16 +60,14 @@ function initialize_items_form(items) {
     for (let input_group of Array.from($("#orders_list").children())) {
       const item_id = +input_group.children[0].value;
       const input_volume = +input_group.children[1].value;
-      const input_rate = +input_group.children[2].value;
+      const input_total = +input_group.children[2].value;
       const item = items_map.get(item_id);
-      const cost = input_rate * input_volume;
-      total_cost += cost;
+      total_cost += input_total;
       receipt_table_html += `
         <tr class='fw-bold'>
           <td>${item.name}</td>
-          <td>${input_rate.toFixed(4)}</td>
           <td>${input_volume}</td>
-          <td>${cost.toFixed(4)}</td>
+          <td>${input_total}</td>
         </tr>`;
     }
     receipt_table_html += `
@@ -92,42 +90,19 @@ function initialize_items_form(items) {
   $(".order-item-select").html(item_select_options_html);
 
   const add_new = () => {
-    const item = items[0];
-    const volume_value = item.can_set_price ? 1 : "";
-    const rate_value = item.can_set_price ? "" : item.rate;
-    const volume_state = item.can_set_price ? "disabled" : "";
-    const rate_state = item.can_set_price ? "" : "disabled";
-
     const input_group = `
       <div class="input-group my-2">
         <select class="order-item-select form-select mx-2" aria-label="Item name">
          ${item_select_options_html}
         </select>
-        <input ${volume_state} value="${volume_value}" type="number" min='0' class="volume-input form-control mx-2" placeholder="Volume" aria-label="Volume"/>
-        <input ${rate_state} value="${rate_value}" type="number" min='0' class="rate-input form-control mx-2" placeholder="Rate" aria-label="Rate"/>
+        <input value="" type="number" min='0' class="volume-input form-control mx-2" placeholder="Volume" aria-label="Volume"/>
+        <input value="" type="number" min='0' class="total-input form-control mx-2" placeholder="Total" aria-label="Total"/>
         <button onclick='delete_input_group(this)' class='mx-2 btn btn-outline-danger rounded-pill'><i class="fas fa-trash"></i></button>
       </div>`;
     $("#orders_list").append(input_group);
-    $(".order-item-select").change((event) => {
-      const siblings = $(event.target).siblings();
-      const item = items_map.get(+event.target.value);
-      const volume = siblings[0];
-      const rate = siblings[1];
-      if (item.can_set_price) {
-        volume.disabled = true;
-        rate.disabled = false;
-        volume.value = "1";
-        rate.value = "";
-      } else {
-        volume.disabled = false;
-        rate.disabled = true;
-        volume.value = "";
-        rate.value = item.rate;
-      }
-      construct_table_rows();
-    });
+    $(".order-item-select").change((_) => { construct_table_rows(); });
     $(".volume-input").on("input", () => construct_table_rows());
-    $(".rate-input").on("input", () => construct_table_rows());
+    $(".total-input").on("input", () => construct_table_rows());
     construct_table_rows();
   };
   add_new();
@@ -155,8 +130,8 @@ async function onSubmit() {
   for (let input_group of Array.from($("#orders_list").children())) {
     const item_id = +input_group.children[0].value;
     const input_volume = +input_group.children[1].value;
-    const input_rate = +input_group.children[1].value;
-    purchases.push({ item: item_id, volume: input_volume, rate: input_rate });
+    const input_total = +input_group.children[2].value;
+    purchases.push({ item: item_id, volume: input_volume, total: input_total });
   }
   const form = {
     customer: +$("#customer_select").val(),

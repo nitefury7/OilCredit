@@ -68,9 +68,7 @@ def get_items(_):
     for item in Item.objects.all():
         items.append({
             "id": item.pk,
-            "rate": item.rate,
             "name": item.name,
-            "can_set_price": item.can_set_price
         })
     return JsonResponse(items, safe=False)
 
