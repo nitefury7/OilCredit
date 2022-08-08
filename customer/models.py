@@ -22,6 +22,7 @@ class CustomerProfile(models.Model):
     state = models.CharField(max_length=20, blank=True)
     zip_code = models.BigIntegerField(blank=True, null=True)
     contact = PhoneNumberField(blank=True)
+    credit = models.FloatField(default=0, validators=(MinValueValidator(0),))
 
     def __str__(self):
         return str(self.user.username)

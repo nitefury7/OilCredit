@@ -30,6 +30,7 @@ function initialize_user_select(users) {
             <tr> <th>Last Name</th> <td>${user_info.last_name}</td> </tr>
             <tr> <th>Contact</th> <td>${user_info.contact}</td> </tr>
             <tr> <th>Email</th> <td>${user_info.email}</td> </tr>
+            <tr> <th>Available Credit</th> <td>${user_info.credit}</td> </tr>
         </tbody>
       `;
     $("#customer_profile").html(html);
@@ -100,7 +101,9 @@ function initialize_items_form(items) {
         <button onclick='delete_input_group(this)' class='mx-2 btn btn-outline-danger rounded-pill'><i class="fas fa-trash"></i></button>
       </div>`;
     $("#orders_list").append(input_group);
-    $(".order-item-select").change((_) => { construct_table_rows(); });
+    $(".order-item-select").change((_) => {
+      construct_table_rows();
+    });
     $(".volume-input").on("input", () => construct_table_rows());
     $(".total-input").on("input", () => construct_table_rows());
     construct_table_rows();
@@ -120,7 +123,39 @@ $(document).ready(async () => {
   initialize_items_form(items);
 });
 
-async function onSubmit() {
+function onSetCreditConfirm() {
+  const credit= +$("#input_credit").val();
+  document.querySelector("#confirm-set-credit .modal-body").innerHTML = `
+    Do you want to set the credit to <span class="fs-5 fw-bold text-danger"> ${credit} </span>
+  `;
+  new bootstrap.Modal(document.getElementById("confirm-set-credit")).toggle();
+}
+
+async function onSetCredit() {
+  const csrf_token = await (async () => {
+    const response = await fetch(GET_CSRF_TOKEN_ENDPOINT);
+    return await response.json();
+  })();
+
+  const form = {
+    customer: +$("#customer_select").val(),
+    credit: +$("#input_credit").val(),
+  };
+
+  console.log(window.location.href);
+  await fetch("set_credit/", {
+    credentials: "same-origin",
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRFToken": csrf_token,
+    },
+    body: JSON.stringify(form),
+  });
+  window.location.reload();
+}
+
+async function onInvoiceSubmit() {
   const csrf_token = await (async () => {
     const response = await fetch(GET_CSRF_TOKEN_ENDPOINT);
     return await response.json();

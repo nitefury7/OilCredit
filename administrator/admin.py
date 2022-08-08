@@ -161,7 +161,7 @@ class CustomAdminSite(admin.AdminSite):
         response['Content-Disposition'] = 'attachment; filename=All_Customers.csv'
         writer = csv.writer(response, dialect='excel')
         header = ('Customer ID', 'Username', 'First Name', 'Last Name', 'Email',
-                  'Contact', 'Gender', 'City', 'State', 'Zip Code', )
+                  'Contact', 'Gender', 'City', 'State', 'Zip Code', 'Available Credit' )
         writer.writerow(header)
         for customer in CustomerProfile.objects.all():
             contact = ""
@@ -172,7 +172,7 @@ class CustomAdminSite(admin.AdminSite):
             row = (
                 customer.id, customer.user.username, customer.user.first_name, customer.user.last_name,
                 customer.user.email, contact, customer.get_gender_display(), customer.city,
-                customer.state, customer.zip_code,
+                customer.state, customer.zip_code, customer.credit,
             )
             writer.writerow(row)
         return response

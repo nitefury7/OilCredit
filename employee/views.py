@@ -59,6 +59,7 @@ def get_customer_profile(request, id):
         "last_name": customer.user.last_name,
         "email": customer.user.email,
         "contact": contact,
+        "credit": customer.credit,
     })
 
 
@@ -74,11 +75,25 @@ def get_items(_):
 
 
 @ensure_auth(EmployeeProfile)
+def set_credit(request):
+    if request.method == 'POST':
+        json_form = json.loads(request.body)
+        customer = get_object_or_404(CustomerProfile, pk=json_form['customer'])
+        customer.credit = json_form["credit"]
+        try:
+            customer.save()
+            messages.success(request, "Set credit successfully.")
+        except:
+            messages.error(request, "Cannot set credit.")
+    return HttpResponse(status=400)
+
+
+@ensure_auth(EmployeeProfile)
 def place_order(request):
     if request.method == 'POST':
         json_form = json.loads(request.body)
-        profile = get_object_or_404(CustomerProfile, pk=json_form['customer'])
-        invoice = Invoice(customer=profile,
+        customer = get_object_or_404(CustomerProfile, pk=json_form['customer'])
+        invoice = Invoice(customer=customer,
                           order_timestamp=timezone.now(),
                           employee=get_profile(EmployeeProfile, request.user))
 
@@ -88,12 +103,20 @@ def place_order(request):
             messages.error(request, "Cannot process empty form")
             return HttpResponse(status=400)
         elif all([form.is_valid() for form in forms]):
-            objects = [form.save(commit=False) for form in forms]
+            purchases = [form.save(commit=False) for form in forms]
+
+            if customer.credit < sum(purchase.total for purchase in purchases):
+                messages.error(request, "Not enough credit")
+                return HttpResponse(status=400)
+
             with transaction.atomic():
                 invoice.save()
-                for object in objects:
-                    object.invoice = invoice
-                    object.save()
+                for purchase in purchases:
+                    purchase.invoice = invoice
+                    purchase.save()
+                customer.credit -= invoice.cost()
+                customer.save()
+
             messages.success(request, "Your order was placed.")
             return HttpResponse("")
         else:

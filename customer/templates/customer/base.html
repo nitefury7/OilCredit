@@ -1,6 +1,12 @@
 {% extends 'home/base_dashboard.html' %}
 {% load static %}
 
+{% block header_extra %}
+  <div class="ms-auto text-white">
+      <span class="fs-4"><i class="fa-solid fa-credit-card"></i> Credit: <span class="text-warning">{{ customer.credit }}</span> </span>
+  </div>
+{% endblock %}
+
 {% block sidebar_nav %}
 <div class="ms-4 mt-4 d-flex flex-column gap-3">
   <a href="{% url 'customer:orders' %}" class="text-decoration-none text-white">

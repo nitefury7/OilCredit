@@ -6,7 +6,7 @@
 
 {% block extrascripts %}
 {{ block.super }}
-<script src="{% static 'employee/place_order.js' %}"></script>
+<script defer src="{% static 'employee/place_order.js' %}"></script>
 {% endblock %}
 
 {% block extrastyle %}
@@ -23,16 +23,47 @@
       </select>
     </div>
     
-    <div id='customer_profile_card' class="card m-3 bg-light d-none" style="width: 50ch;">
-      <div class="card-body">
-        <h5 class="card-title">
-          <i class="fa-solid fa-user"></i>
-          Customer Profile
-        </h5>
-        <p class="card-text">
-          <table id='customer_profile' class='table'>
-          </table>
-        </p>
+    
+    <div class="d-flex flex-wrap">
+      <div id='customer_profile_card' class="card m-3 bg-light d-none" style="width: 50ch;">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="fa-solid fa-user"></i>
+            Customer Profile
+          </h5>
+          <p class="card-text">
+            <table id='customer_profile' class='table'>
+            </table>
+          </p>
+        </div>
+      </div>
+      
+      <div class="ms-5 d-flex flex-column flex-grow-1 justify-content-center" style="gap: 1rem">
+        <span class="fs-4"><i class="fa-solid fa-money-bill-transfer"></i> Set Credit </span>
+        <div class="d-flex flex-wrap">
+          <input id="input_credit" style="max-width: 30ch" class="form-control mx-2" type="number" min="0"></input>
+          <button onclick="onSetCreditConfirm()" type="button" class="btn btn-warning" data-bs-toggle="modal">
+            Submit
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="confirm-set-credit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirm-set-credit-label" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="confirm-set-credit-label">Confirm your order</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button onclick='onSetCredit()' id='submit' type="button" class="btn btn-warning">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
     
@@ -59,7 +90,7 @@
         </button>
       </div>
       <div class="col-md-6">
-        <div class="card m-3 bg-light" style="width: 50ch;">
+        <div class="card m-3 bg-light" style="max-width: 50ch;">
           <div class="card-body">
             <h5 class="card-title">
               <i class="fa-solid fa-receipt"></i>
@@ -94,7 +125,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button onclick='onSubmit()' id='submit' type="button" class="btn btn-warning">Confirm</button>
+                    <button onclick='onInvoiceSubmit()' id='submit' type="button" class="btn btn-warning">Confirm</button>
                   </div>
                 </div>
               </div>

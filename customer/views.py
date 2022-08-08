@@ -24,6 +24,11 @@ class Orders(ListView):
         customer = get_profile(CustomerProfile, self.request.user)
         return qs.filter(customer=customer).order_by('-order_timestamp')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["customer"] = get_profile(CustomerProfile, self.request.user)
+        return context
+
 
 @ensure_auth(CustomerProfile)
 def spendings_by_product(request):
@@ -50,7 +55,7 @@ def latest_spendings(request):
             order_timestamp__gte=date,
             order_timestamp__lte=date + timedelta(days=1),
         )
-        spendings.append(sum(invoice.total for invoice in invoices))
+        spendings.append(sum(invoice.cost() for invoice in invoices))
 
     return JsonResponse(list(reversed(spendings)), safe=False)
 

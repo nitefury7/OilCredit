@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_items/', views.get_items, name='get_items'),
     path('get_customer_profile/<int:id>',
          views.get_customer_profile, name='get_customer_profile'),
+    path('set_credit/', views.set_credit, name='set_credit'),
 ]
