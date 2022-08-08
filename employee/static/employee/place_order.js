@@ -170,6 +170,7 @@ async function onInvoiceSubmit() {
   }
   const form = {
     customer: +$("#customer_select").val(),
+    invoice_id: +$('#input_invoice_id').val(),
     purchases: purchases,
   };
 

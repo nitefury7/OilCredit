@@ -92,8 +92,13 @@ def set_credit(request):
 def place_order(request):
     if request.method == 'POST':
         json_form = json.loads(request.body)
+        if Invoice.objects.filter(pk=json_form["invoice_id"]).exists():
+            messages.error(request, "This invoice ID already exists!")
+            return HttpResponse(status=400)
+
         customer = get_object_or_404(CustomerProfile, pk=json_form['customer'])
-        invoice = Invoice(customer=customer,
+        invoice = Invoice(pk=json_form["invoice_id"],
+                          customer=customer,
                           order_timestamp=timezone.now(),
                           employee=get_profile(EmployeeProfile, request.user))
 
