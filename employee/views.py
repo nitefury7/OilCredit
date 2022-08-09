@@ -1,5 +1,7 @@
 import json
-
+import csv
+from collections import OrderedDict
+from datetime import datetime
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse, HttpResponse
@@ -11,7 +13,7 @@ from django.utils import timezone
 from django.shortcuts import render, redirect
 
 from home.utils import ensure_auth, get_profile
-from customer.models import CustomerProfile, Invoice, Item
+from customer.models import CustomerProfile, Invoice, Item, Purchase
 from employee.models import EmployeeProfile
 from employee.forms import EmployeeProfileForm, PurchaseForm
 
@@ -136,6 +138,51 @@ def place_order(request):
 
     return render(request, 'employee/place_order.html')
 
+
+def export_invoices(qs):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="Invoices_{}.csv"'.format(datetime.now())
+        writer = csv.writer(response, dialect='excel')
+
+        header = ['Date', 'ACC. No.', 'Name', 'INV. No.']
+        items = OrderedDict()
+        for item in Item.objects.all():
+            items[item.pk] = item.name
+
+        for item in [(f"Volume {item_name}", f"Price {item_name}")
+                     for item_name in items.values()]:
+            header.extend(item)
+        header.append('Total')
+        writer.writerow(header)
+
+        for invoice in qs:
+            details = []
+            details.extend([
+                invoice.order_timestamp,
+                invoice.customer.pk,
+                invoice.customer.user.username,
+                invoice.id,
+            ])
+            purchases = Purchase.objects.filter(invoice=invoice.pk)
+            purchases_dict = {}
+            for purchase in purchases:
+                purchases_dict[purchase.item.pk] = (
+                    purchase.volume, purchase.total)
+            for item_id in items:
+                details.extend(purchases_dict.get(item_id, (0, 0)))
+            details.append(invoice.cost())
+            writer.writerow(details)
+
+        return response
+
+@ensure_auth(EmployeeProfile)
+def export_all_invoices(_):
+    return export_invoices(Invoice.objects.all())
+
+@ensure_auth(EmployeeProfile)
+def export_daily_invoices(_):
+    today = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    return export_invoices(Invoice.objects.filter(order_timestamp__gte=today))
 
 @ensure_auth(EmployeeProfile)
 def profile_settings(request):

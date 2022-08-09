@@ -1,6 +1,6 @@
 import csv
 from collections import OrderedDict
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.urls import path
 from django.utils import timezone
@@ -115,7 +115,7 @@ class CustomAdminSite(admin.AdminSite):
 
     def export_invoices(self, qs):
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename=All_Invoices.csv'
+        response['Content-Disposition'] = 'attachment; filename="Invoices_{}.csv"'.format(datetime.now())
         writer = csv.writer(response, dialect='excel')
 
         header = ['Date', 'ACC. No.', 'Name', 'INV. No.']
